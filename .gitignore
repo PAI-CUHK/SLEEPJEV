@@ -1,0 +1,53 @@
+# Python and build output
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+build/
+dist/
+*.egg-info/
+
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*_pw.txt
+SSH_pw.txt
+*password*
+*secret*
+*token*
+
+# External data, checkpoints, caches, and generated results
+data/
+dataset/
+artifacts/
+cache/
+hf_cache/
+checkpoints/
+runs/
+outputs/
+reports/
+final_results/
+snapshots/
+*.pt
+*.pth
+*.bin
+*.safetensors
+*.onnx
+*.joblib
+*.npz
+*.edf
+*.zip
+*.tar.gz
+
+# Local research scratch space
+.codex_staging/
+.tmp_*
+tmp_*

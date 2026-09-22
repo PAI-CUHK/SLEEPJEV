@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 720" role="img" aria-labelledby="title desc">
+  <title id="title">Conventional pipeline versus SLEEPJEV</title>
+  <desc id="desc">A two-lane comparison between fixed task heads and a shared cache with runtime queries.</desc>
+  <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="m0 0 10 5-10 5z" fill="#315a72"/></marker></defs>
+  <rect width="1500" height="720" fill="#fff"/>
+  <text x="60" y="58" fill="#102a43" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700">Fixed-head pipeline vs. SLEEPJEV</text>
+  <g font-family="Arial, Helvetica, sans-serif">
+    <rect x="55" y="100" width="1390" height="245" rx="14" fill="#f4f6f7" stroke="#a6b4bd" stroke-width="2"/>
+    <rect x="55" y="390" width="1390" height="275" rx="14" fill="#eef8f7" stroke="#0b8f87" stroke-width="2"/>
+    <text x="85" y="145" fill="#557080" font-size="22" font-weight="700">CONVENTIONAL FIXED-HEAD</text>
+    <text x="85" y="435" fill="#0b8f87" font-size="22" font-weight="700">SLEEPJEV</text>
+    <g fill="#fff" stroke="#9eabb4" stroke-width="2">
+      <rect x="85" y="183" width="180" height="92" rx="9"/><rect x="335" y="183" width="245" height="92" rx="9"/><rect x="650" y="183" width="245" height="92" rx="9"/><rect x="965" y="183" width="245" height="92" rx="9"/><rect x="1280" y="183" width="125" height="92" rx="9"/>
+    </g>
+    <g fill="#fff" stroke="#0b8f87" stroke-width="2">
+      <rect x="85" y="480" width="180" height="92" rx="9"/><rect x="335" y="480" width="245" height="92" rx="9"/><rect x="650" y="480" width="245" height="92" rx="9"/><rect x="965" y="480" width="245" height="92" rx="9"/><rect x="1280" y="480" width="125" height="92" rx="9"/>
+    </g>
+    <g fill="#102a43" font-size="17" text-anchor="middle">
+      <text x="175" y="220"><tspan x="175">PSG</tspan><tspan x="175" dy="24">recording</tspan></text>
+      <text x="457" y="220"><tspan x="457">task-specific</tspan><tspan x="457" dy="24">encoding</tspan></text>
+      <text x="772" y="220"><tspan x="772">fixed stage /</tspan><tspan x="772" dy="24">event heads</tspan></text>
+      <text x="1087" y="220"><tspan x="1087">separate task</tspan><tspan x="1087" dy="24">outputs</tspan></text>
+      <text x="1342" y="220"><tspan x="1342">result</tspan></text>
+      <text x="175" y="517"><tspan x="175">PSG</tspan><tspan x="175" dy="24">recording</tspan></text>
+      <text x="457" y="517"><tspan x="457">one shared</tspan><tspan x="457" dy="24">overnight cache</tspan></text>
+      <text x="772" y="517"><tspan x="772">runtime</tspan><tspan x="772" dy="24">SleepQuery</tspan></text>
+      <text x="1087" y="517"><tspan x="1087">sparse readout +</tspan><tspan x="1087" dy="24">shared scorer</tspan></text>
+      <text x="1342" y="517"><tspan x="1342">options</tspan><tspan x="1342" dy="24">P(. )</tspan></text>
+    </g>
+    <g fill="none" stroke="#315a72" stroke-width="3" marker-end="url(#arrow)">
+      <path d="M265 229h62"/><path d="M580 229h62"/><path d="M895 229h62"/><path d="M1210 229h62"/>
+      <path d="M265 526h62"/><path d="M580 526h62"/><path d="M895 526h62"/><path d="M1210 526h62"/>
+    </g>
+    <text x="85" y="316" fill="#a6533e" font-size="16">New task or label set usually means a new head or path.</text>
+    <text x="85" y="634" fill="#0b8f87" font-size="16">New runtime questions reuse the signal state and scorer contract.</text>
+  </g>
+</svg>

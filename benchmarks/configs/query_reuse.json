@@ -1,0 +1,8 @@
+{
+  "epochs": 640,
+  "feature_dim": 6,
+  "hidden_size": 32,
+  "device": "cpu",
+  "seed": 17,
+  "notes": "Synthetic protocol template. Replace with a pinned device and a real feature cache before publishing performance claims."
+}

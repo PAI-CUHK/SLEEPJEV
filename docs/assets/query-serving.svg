@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 700" role="img" aria-labelledby="title desc">
+  <title id="title">SLEEPJEV high-query serving</title>
+  <desc id="desc">One encoding fans out to many sparse runtime queries.</desc>
+  <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="m0 0 10 5-10 5z" fill="#315a72"/></marker></defs>
+  <rect width="1500" height="700" fill="#fff"/>
+  <text x="60" y="60" fill="#102a43" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700">High-query serving with a reusable overnight cache</text>
+  <text x="60" y="94" fill="#557080" font-family="Arial, Helvetica, sans-serif" font-size="17">The diagram expresses the workload hypothesis; it does not assert a universal speedup.</text>
+  <rect x="70" y="170" width="240" height="120" rx="12" fill="#e9f6f5" stroke="#0b8f87" stroke-width="2"/>
+  <text x="190" y="218" text-anchor="middle" fill="#102a43" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="700">one-night encode</text>
+  <text x="190" y="252" text-anchor="middle" fill="#557080" font-family="Arial, Helvetica, sans-serif" font-size="17">shared SleepCache</text>
+  <path d="M310 230h125" fill="none" stroke="#315a72" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="440" y="145" width="270" height="170" rx="12" fill="#eef4fb" stroke="#4a75a5" stroke-width="2"/>
+  <text x="575" y="195" text-anchor="middle" fill="#102a43" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="700">sparse index</text>
+  <text x="575" y="232" text-anchor="middle" fill="#557080" font-family="Arial, Helvetica, sans-serif" font-size="17">legal filters</text>
+  <text x="575" y="262" text-anchor="middle" fill="#557080" font-family="Arial, Helvetica, sans-serif" font-size="17">query-conditioned top-k</text>
+  <path d="M710 230h100" fill="none" stroke="#315a72" stroke-width="3" marker-end="url(#arrow)"/>
+  <g fill="#fff3ee" stroke="#e07a5f" stroke-width="2" font-family="Arial, Helvetica, sans-serif" text-anchor="middle">
+    <rect x="815" y="125" width="185" height="60" rx="9"/><rect x="815" y="205" width="185" height="60" rx="9"/><rect x="815" y="285" width="185" height="60" rx="9"/><rect x="815" y="365" width="185" height="60" rx="9"/><rect x="815" y="445" width="185" height="60" rx="9"/>
+    <text x="907" y="162" fill="#102a43" font-size="18">Q = 1</text><text x="907" y="242" fill="#102a43" font-size="18">Q = 8</text><text x="907" y="322" fill="#102a43" font-size="18">Q = 32</text><text x="907" y="402" fill="#102a43" font-size="18">Q = 128</text><text x="907" y="482" fill="#102a43" font-size="18">Q = 512</text>
+  </g>
+  <g fill="none" stroke="#e07a5f" stroke-width="2" marker-end="url(#arrow)"><path d="M710 230h80v-75h15"/><path d="M710 230h95v5h0"/><path d="M710 230h80v85h15"/><path d="M710 230h80v165h15"/><path d="M710 230h80v245h15"/></g>
+  <path d="M1000 315h100" fill="none" stroke="#315a72" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="1110" y="170" width="300" height="300" rx="12" fill="#f0f7f5" stroke="#0b8f87" stroke-width="2"/>
+  <text x="1260" y="215" text-anchor="middle" fill="#102a43" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="700">shared scorer</text>
+  <text x="1260" y="253" text-anchor="middle" fill="#557080" font-family="Arial, Helvetica, sans-serif" font-size="17">many option sets</text>
+  <text x="1260" y="290" text-anchor="middle" fill="#557080" font-family="Arial, Helvetica, sans-serif" font-size="17">many time windows</text>
+  <rect x="1170" y="333" width="180" height="60" rx="8" fill="#0b8f87"/>
+  <text x="1260" y="370" text-anchor="middle" fill="#fff" font-family="Arial, Helvetica, sans-serif" font-size="17">P(runtime options)</text>
+  <text x="70" y="620" fill="#557080" font-family="Arial, Helvetica, sans-serif" font-size="17">Benchmark requirements: pin device, warm-up, repeats, memory, quality drift, and encode inclusion.</text>
+</svg>
