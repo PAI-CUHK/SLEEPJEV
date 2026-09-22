@@ -6,8 +6,8 @@
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#102a43" flood-opacity=".10"/></filter>
   </defs>
   <rect width="1500" height="660" fill="#fff"/>
-  <text x="60" y="58" fill="#102a43" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700">SLEEPJEV: shared overnight state, runtime semantic decision</text>
-  <text x="60" y="91" fill="#557080" font-family="Arial, Helvetica, sans-serif" font-size="17">One signal encoding supports many explicit queries over time, stage, position, and event evidence.</text>
+  <text x="60" y="58" fill="#102a43" font-family="Inter, Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="28" font-weight="700">SLEEPJEV: shared overnight state, runtime semantic decision</text>
+  <text x="60" y="91" fill="#557080" font-family="Inter, Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="17">One signal encoding supports many explicit queries over time, stage, position, and event evidence.</text>
   <g filter="url(#shadow)">
     <rect x="55" y="160" width="220" height="230" rx="12" fill="#e9f6f5" stroke="#0b8f87" stroke-width="2"/>
     <rect x="325" y="160" width="255" height="230" rx="12" fill="#eef4fb" stroke="#4a75a5" stroke-width="2"/>
@@ -15,7 +15,7 @@
     <rect x="920" y="160" width="245" height="230" rx="12" fill="#fff3ee" stroke="#e07a5f" stroke-width="2"/>
     <rect x="1215" y="160" width="230" height="230" rx="12" fill="#f0f7f5" stroke="#0b8f87" stroke-width="2"/>
   </g>
-  <g fill="#102a43" font-family="Arial, Helvetica, sans-serif">
+  <g fill="#102a43" font-family="Inter, Avenir Next, Helvetica Neue, Arial, sans-serif">
     <text x="82" y="202" font-size="22" font-weight="700">8-hour PSG</text>
     <text x="82" y="235" font-size="16">epoch features</text>
     <path d="M78 315h28l13-35 18 66 20-81 16 54h38l12-24 17 20 24-6" fill="none" stroke="#0b8f87" stroke-width="4" stroke-linecap="round"/>
@@ -47,5 +47,5 @@
     <path d="M275 275h45"/><path d="M580 275h45"/><path d="M870 275h45"/><path d="M1165 275h45"/>
   </g>
   <path d="M1040 430v80H455v-80" fill="none" stroke="#e07a5f" stroke-width="2" stroke-dasharray="7 7" marker-end="url(#arrow)"/>
-  <text x="625" y="548" fill="#e07a5f" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700">one overnight encoding, many runtime questions</text>
+  <text x="625" y="548" fill="#e07a5f" font-family="Inter, Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="18" font-weight="700">one overnight encoding, many runtime questions</text>
 </svg>

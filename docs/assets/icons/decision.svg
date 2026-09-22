@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-label="Decision icon">
+  <path d="M12 3v6M12 9 6 15M12 9l6 6M6 15v5M18 15v5" fill="none" stroke="#0b8f87" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="12" cy="3" r="1.7" fill="#0b8f87"/><circle cx="6" cy="20" r="1.7" fill="#0b8f87"/><circle cx="18" cy="20" r="1.7" fill="#0b8f87"/>
+</svg>

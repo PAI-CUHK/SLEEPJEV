@@ -4,8 +4,8 @@ This directory contains the visual identity and method diagrams used by the publ
 repository.
 
 - `sleepjev-logo.svg` is the editable repository logo and wordmark.
-- `overall-framework-final.png` is the project-provided overview figure used on the
-  README homepage.
+- `icons/` contains the small line icons used by the README feature grid.
+- `overall-framework-final.png` is the overview figure used on the README homepage.
 - `overall-framework.svg` shows the end-to-end runtime decision path.
 - `conventional-vs-sleepjev.svg` compares fixed-head and runtime-option serving.
 - `query-serving.svg` shows one overnight encode reused across many queries.

@@ -9,6 +9,6 @@
     <path d="M97 44v22M97 66l-18 16M97 66l18 16" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
     <circle cx="79" cy="86" r="7" fill="#fff"/><circle cx="115" cy="86" r="7" fill="#fff"/>
   </g>
-  <text x="196" y="91" fill="#102a43" font-family="Arial, Helvetica, sans-serif" font-size="62" font-weight="700" letter-spacing="2">SLEEPJEV</text>
-  <text x="200" y="126" fill="#0b8f87" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="600" letter-spacing="3">RUNTIME PSG DECISIONS</text>
+  <text x="196" y="91" fill="#102a43" font-family="Inter, Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="62" font-weight="700" letter-spacing="2">SLEEPJEV</text>
+  <text x="200" y="126" fill="#0b8f87" font-family="Inter, Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="18" font-weight="600" letter-spacing="3">RUNTIME PSG DECISIONS</text>
 </svg>

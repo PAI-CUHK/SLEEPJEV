@@ -3,8 +3,8 @@
 </p>
 
 <p align="center">
-  <strong>Runtime semantic decisions over long-horizon PSG representations.</strong><br>
-  Reusable overnight encoding · sparse temporal retrieval · dynamic option scoring
+  <strong>Runtime semantic decisions for long-horizon PSG.</strong><br>
+  Reusable overnight encoding · sparse temporal retrieval · runtime option scoring
 </p>
 
 <p align="center">
@@ -14,34 +14,79 @@
   <img src="https://img.shields.io/badge/status-alpha%20research%20prototype-e07a2f" alt="research prototype">
 </p>
 
-[Chinese documentation](README.zh-CN.md)
+<p align="center">
+  <a href="#jev-in-sleepjev">JEV design</a> ·
+  <a href="#method-at-a-glance">Method</a> ·
+  <a href="#high-query-workload-results">Results</a> ·
+  <a href="README.zh-CN.md">Chinese documentation</a>
+</p>
 
 > **Research prototype.** SLEEPJEV is not a medical device, diagnostic system, or source of clinical advice. It has not been validated for patient care or deployment.
 
-SLEEPJEV is a signal-native research implementation for making many explicit, runtime sleep questions over one long polysomnography (PSG) recording. It encodes an overnight recording once, builds label-free serving indexes over the resulting state, retrieves a query-conditioned subset of time tokens, and scores the options supplied by the query at runtime.
-
-The design is inspired by the JEV idea of treating a decision as a relationship between evidence, a question, and an explicit candidate meaning set. In SLEEPJEV, the output is a probability distribution over the options in a `SleepQuery`: it is an evidence/state relationship, not a disease probability.
+SLEEPJEV is a signal-native research implementation for asking many explicit,
+runtime sleep questions over one long polysomnography (PSG) recording. It encodes
+the overnight signal once, builds serving indexes over the resulting state, reads a
+query-conditioned subset of time tokens, and scores the options supplied by the
+query at runtime.
 
 ![SLEEPJEV overall framework](docs/assets/overall-framework-final.png)
 
-*Figure 1. Project-provided overview of the JEV-based sleep decision framework.*
-The editable SVG source is retained as [`overall-framework.svg`](docs/assets/overall-framework.svg).
-
-Additional publication-oriented views are available in [`docs/assets/`](docs/assets/):
-[`conventional-vs-sleepjev.svg`](docs/assets/conventional-vs-sleepjev.svg) compares the
-serving contracts, and [`query-serving.svg`](docs/assets/query-serving.svg) illustrates
-the high-query reuse regime. The SVG files are editable, repository-native fallbacks;
-production artwork prompts for GPT-IMAGE are collected in
-[`docs/assets/image-prompts.md`](docs/assets/image-prompts.md).
+<p align="center"><sub>One overnight PSG representation supports many runtime semantic decisions.</sub></p>
 
 ## Why SLEEPJEV?
 
-- **Encode once, ask many questions.** A reusable `SleepCache` keeps local, coarse, hourly, and night-level states for a complete recording.
-- **Runtime semantic options.** Queries carry their own option set, such as `("W", "N2", "REM")` or `("negative", "positive")`; the scorer is not limited to one fixed output head.
-- **Sparse, auditable readout.** Time windows, predicted stage constraints, event postings, and query-conditioned top-k selection reduce the state read by each query.
-- **Long-horizon aware.** Hierarchical states preserve local evidence while making night-level questions possible without re-encoding the PSG per query.
-- **Positive-unlabeled aware evaluation.** Unknown event labels remain unknown; they are not silently converted to negatives.
-- **Explicit baselines and contracts.** Fixed-head, shared multi-task, independent-task, workload, and query-reuse paths are included as research controls.
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <img src="docs/assets/icons/signal.svg" width="22" alt="" />
+      <strong>Signal-native</strong><br />
+      <sub>One `SleepCache` keeps local, coarse, hourly, and night-level states for a complete recording.</sub>
+    </td>
+    <td width="50%" valign="top">
+      <img src="docs/assets/icons/query.svg" width="22" alt="" />
+      <strong>Runtime semantics</strong><br />
+      <sub>`SleepQuery` supplies the question and its candidate meanings instead of using one fixed head.</sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <img src="docs/assets/icons/index.svg" width="22" alt="" />
+      <strong>Sparse readout</strong><br />
+      <sub>Time, stage, position, and event constraints narrow the state before option scoring.</sub>
+    </td>
+    <td width="50%" valign="top">
+      <img src="docs/assets/icons/decision.svg" width="22" alt="" />
+      <strong>Workload-oriented</strong><br />
+      <sub>The same overnight representation can serve many explicit questions without re-encoding the PSG.</sub>
+    </td>
+  </tr>
+</table>
+
+## JEV in SLEEPJEV
+
+JEV is used here as a design lens for separating **evidence formation** from
+**semantic decision**. A decision is defined by three pieces: the evidence being
+read, the question being asked, and the candidate meanings that are valid for that
+question. SLEEPJEV applies this structure to sleep rather than binding every task to
+a permanent classifier head.
+
+| JEV element | SLEEPJEV realization |
+| --- | --- |
+| Evidence | A shared overnight PSG state: epoch, coarse, hourly, and night tokens plus serving postings. |
+| Question | A validated `SleepQuery` with a target, time window, stage or position constraints, and query type. |
+| Candidate meanings | `query.options`, such as `("W", "N2", "REM")` or `("negative", "positive")`. |
+| Decision | A shared option-conditioned scorer returns probabilities over the options supplied by the current query. |
+
+```text
+PSG -> shared evidence state S
+(S, question q, candidate set Oq) -> probabilities over Oq
+```
+
+For sleep workloads, this separation is useful because the expensive part is often
+forming a representation of a long recording, while the question changes from one
+workflow step to the next. SLEEPJEV keeps the signal state reusable and defers the
+semantic choice until query time. The implementation is **JEV-inspired**; it does
+not claim to reproduce an external JEV standard or clinical decision system.
 
 ## Method at a glance
 
@@ -57,7 +102,7 @@ Overnight PSG
     -> probabilities over runtime options
 ```
 
-### SLEEPJEV and a fixed classifier
+### SLEEPJEV vs. a fixed classifier
 
 | Conventional fixed-head pipeline | SLEEPJEV |
 | --- | --- |
@@ -66,14 +111,15 @@ Overnight PSG
 | Repeated long-recording work is often repeated per task. | One cached overnight state supports a multi-query workload. |
 | Location and classification are commonly separate outputs. | Sparse retrieval and option scoring share the query-conditioned readout. |
 
-This is a systems and representation hypothesis, not a claim that dynamic options automatically improve clinical accuracy.
+This is a systems and representation hypothesis. Runtime options do not, by
+themselves, establish better clinical accuracy.
 
 ## High-query workload results
 
 The main SLEEPJEV advantage appears when one overnight state serves many runtime
 queries. The figures below use the project's final **two-seed averages** and focus on
-the high-query regime (`Q >= 8`). The full comparison, including stage macro-F1,
-PU recall, Q=1, and all baselines, is available in [`docs/results.md`](docs/results.md).
+the high-query regime (`Q >= 8`). The complete comparison is available in
+[`docs/results.md`](docs/results.md).
 
 ### Query quality stays competitive
 
@@ -137,9 +183,9 @@ At `Q=512`, sparse SLEEPJEV readout is **25.8x** faster than dense JEV readout
 | Q=512 sparse vs dense JEV readout | **25.8x** |
 | Sparse vs dense event score agreement | **Exact match reported** |
 
-The intended conclusion is **high-Q quality retention plus query-conditioned sparse
-readout efficiency**. This README intentionally foregrounds that systems result;
-the complete metric table and limitations remain available for audit.
+Taken together, these measurements support a narrower claim: SLEEPJEV is designed
+for high-Q serving, where one overnight representation is reused across many
+explicit questions. They do not establish universal clinical superiority.
 
 To regenerate the plots from the checked-in release data:
 
@@ -257,18 +303,6 @@ Tests and the package build are the minimum reproducibility gate:
 pytest -q
 python -m build
 ```
-
-## JEV perspective
-
-The JEV-inspired contract is:
-
-```text
-shared evidence state + runtime question + runtime options
-    -> shared option-conditioned scorer
-    -> typed probabilities over the supplied options
-```
-
-For SLEEPJEV, the evidence is a long PSG representation, the question is a `SleepQuery`, and the candidate meanings are `query.options`. The important engineering consequence is that semantic decision is deferred to runtime while signal encoding is shared. This makes multi-query serving a first-class workload: encode one night once, compile legal retrieval constraints, then answer many explicit questions.
 
 ## Limitations
 
