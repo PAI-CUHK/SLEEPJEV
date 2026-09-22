@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <strong>Runtime semantic decisions for long-horizon PSG.</strong><br>
+  <strong>JEV-inspired runtime semantic decisions for long-horizon PSG.</strong><br>
   Reusable overnight encoding · sparse temporal retrieval · runtime option scoring
 </p>
 
@@ -170,8 +170,8 @@ quality-retained speedup = raw speedup * min(1, QAI_SLEEPJEV / QAI_baseline)
 | 512 | **164.9095** | 15.6570 | **10.53x** |
 
 At `Q=512`, sparse SLEEPJEV readout is **25.8x** faster than dense JEV readout
-(`0.833 ms` vs `21.520 ms`) with the same learned event score and reported
-`exact match=True`.
+(`0.833 ms` vs `21.520 ms`) with the same learned event score and an exact score
+match in the release measurement.
 
 ### Headline result
 
