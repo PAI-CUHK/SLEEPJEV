@@ -221,6 +221,82 @@
     .footer-note { max-width: 1020px; margin: 16px auto 0; color: #73839c; text-align: center; font-size: 10px; }
     .loading .prob-fill, .loading .mini-track i { opacity: .4; }
     .error-text { color: #c4543f !important; }
+
+    /* Runtime arena theme: dense, dark, and decision-first. */
+    :root {
+      --ink: #e7f0f5;
+      --ink-soft: #8da6b1;
+      --blue: #18b7aa;
+      --blue-dark: #7be4d4;
+      --blue-pale: #123b43;
+      --teal: #39d6bd;
+      --teal-pale: #103d40;
+      --orange: #f28c62;
+      --purple: #a98bed;
+      --line: #21414a;
+      --line-strong: #315761;
+      --paper: #07171e;
+      --card: #0d222b;
+      --shadow: 0 18px 48px rgba(0, 0, 0, .22);
+    }
+    html, body { background: #07171e; }
+    body { color: var(--ink); }
+    .site-header { max-width: 1680px; padding-top: 18px; }
+    .brand-rule { background: #315761; }
+    .brand-copy span, .hero-line p, .panel-head p, .section-title span, .trace-label small,
+    .stage-legend, .stage-axis, .state-foot span, .control label, .options-head span,
+    .replay-status, .output-subtitle, .metric-label, .uncertainty-axis, .metric-cell small,
+    .decision-note, .strip-title p, .strip-hint, .footer-note { color: var(--ink-soft); }
+    .brand-copy strong, .panel-head h2, .hero-line h1 { color: #f4fbfd; }
+    .nav a { color: var(--ink-soft); }
+    .nav a.active, .nav a:hover { color: var(--blue-dark); }
+    .night-pill { color: var(--ink-soft); background: #102d36; border-color: #28515b; }
+    .moon, .step-no { background: var(--teal); color: #062024; }
+    .live-state { color: #72e4c9; background: #103b3d; border-color: #24675f; }
+    .panel, .questions-strip, .parallel-strip { background: var(--card); border-color: var(--line); box-shadow: var(--shadow); }
+    .panel-head { border-color: var(--line); }
+    .status-badge { color: var(--blue-dark); background: #123b43; }
+    .status-badge .badge-icon { background: var(--teal); color: #062024; }
+    .inner-frame, .output-frame { background: #091b23; border-color: var(--line); }
+    .trace-svg .trace-base { stroke: #1d3942; }
+    .trace-svg .trace-window { fill: rgba(57, 214, 189, .13); stroke: rgba(57, 214, 189, .8); }
+    .stage-token.w { background: #36515b; }
+    .stage-token.n1 { background: #5ebcaf; }
+    .stage-token.n2 { background: #218c9a; }
+    .stage-token.n3 { background: #0e556d; }
+    .stage-token.rem { background: var(--purple); }
+    .window-overlay { border-color: var(--orange); background: rgba(242, 140, 98, .15); }
+    .state-foot, .metric-grid, .arena-metric, .parallel-card, .question-card, .audit-chip,
+    .history-row svg { background: #102a33; border-color: var(--line); }
+    .state-counts, .state-counts b, .metric-cell strong, .audit-chip strong,
+    .parallel-prob strong, .parallel-lead b, .question-card-head strong { color: #e7f0f5; }
+    .question-box, .candidate-option, .constraint { background: #102a33; border-color: var(--line-strong); color: var(--ink); }
+    .question-text { color: #f4fbfd; }
+    .constraint b { color: var(--teal); }
+    .query-divider, .decision-audit, .history-box, .score-line, .parallel-foot { background: transparent; border-color: var(--line); }
+    select, input { background: #07171e; color: #e7f0f5; border-color: var(--line-strong); }
+    .preset { color: var(--ink-soft); background: #102a33; border-color: var(--line-strong); }
+    .preset:hover, .preset.active { color: #062024; border-color: var(--teal); background: var(--teal); }
+    .run-button { background: var(--teal); color: #062024; }
+    .run-button:hover { background: #72e4c9; }
+    .replay-toggle { color: var(--blue-dark); background: #123b43; border-color: #28646a; }
+    .replay-toggle.on { color: #062024; background: var(--teal); border-color: var(--teal); }
+    .decision-panel { background: #0a2028; border-color: #2b6970; }
+    .decision-panel .panel-head { background: #0d3b42; }
+    .latency-pill { color: #72e4c9; background: #103d40; }
+    .prob-track, .parallel-track, .mini-track, .uncertainty-track { background: #1c3941; }
+    .prob-fill.blue, .parallel-track i, .mini-track i { background: var(--teal); }
+    .prob-fill.gray { background: #5c7680; }
+    .confidence-ring { border-color: #24424b; border-top-color: var(--teal); border-right-color: var(--teal); }
+    .confidence-ring span, .audit-chip em, .parallel-delta { color: var(--teal); }
+    .strip-icon { color: var(--teal); background: #103d40; }
+    .parallel-strip { border-color: #2b6970; }
+    .parallel-strip .strip-icon { color: var(--teal); background: #103d40; }
+    .parallel-card.live { animation-name: laneFlashDark; }
+    @keyframes laneFlashDark { 0% { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(57,214,189,.16); } 100% { border-color: var(--line); box-shadow: none; } }
+    .parallel-window, .question-card-head em { color: var(--blue-dark); }
+    .question-card-no { color: #062024; background: var(--teal); }
+    .error-text { color: #ff9d7e !important; }
     @media (max-width: 1240px) {
       .site-header { grid-template-columns: 1fr auto; }
       .brand-copy { display: none; }
@@ -271,7 +347,7 @@
       <a href="https://github.com/PAI-CUHK/SLEEPJEV" target="_blank" rel="noreferrer">GitHub source</a>
       <a href="#about">About</a>
     </nav>
-    <div class="night-pill"><span class="moon">*</span><span>SHHS replay<br />real checkpoint</span></div>
+    <div class="night-pill"><span class="moon">*</span><span>SHHS replay<br />public snapshot</span></div>
   </header>
 
   <main class="shell" id="demo">
@@ -378,7 +454,7 @@
       <div class="strip-head"><div class="strip-title"><span class="strip-icon">+</span><div><h2 id="more-heading">More questions, same overnight state</h2><p>The encoded state supports multiple runtime workloads without re-encoding.</p></div></div><span class="strip-hint">Live fan-out · 3 Noul + 1 Score</span></div>
       <div class="question-cards" id="questionCards"></div>
     </section>
-    <p class="footer-note">Research prototype | real SHHS cached feature slice + formal-small SLEEPJEV checkpoint | probabilities describe evidence/state relationships, not disease risk or clinical advice.</p>
+    <p class="footer-note">Research prototype | public replay derived from verified SHHS feature-cache inference | probabilities describe evidence/state relationships, not disease risk or clinical advice.</p>
   </main>
 
   <script src="static-data.js"></script>
