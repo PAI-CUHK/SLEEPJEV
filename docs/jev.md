@@ -1,6 +1,11 @@
 # JEV-inspired terminology in SLEEPJEV
 
-SLEEPJEV is an independent research implementation inspired by the idea of separating evidence formation from runtime semantic decisions. It is not the official TypeSafe AI Jev model, SDK, or standard, and it does not claim to reproduce a proprietary implementation.
+SLEEPJEV (also searchable as Sleep-JEV or SleepJEV) is an independent research
+implementation inspired by the idea of separating evidence formation from
+runtime semantic decisions. It uses local weights and PSG-derived features. It
+is not the official TypeSafe AI Jev model, SDK, or standard, and it does not
+claim to reproduce a proprietary implementation or call the TypeSafe AI Jev
+API.
 
 ## The runtime contract
 

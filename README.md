@@ -1,4 +1,4 @@
-# SLEEPJEV: Runtime Semantic Sleep Analysis over Long-Horizon Polysomnography (PSG)
+# SLEEPJEV (Sleep-JEV): Runtime Semantic Sleep Analysis over Long-Horizon Polysomnography (PSG)
 
 <p align="center">
   <img src="docs/assets/sleepjev-logo.svg" alt="SLEEPJEV logo" width="520">
@@ -32,7 +32,8 @@
 
 > **Research prototype.** SLEEPJEV is not a medical device, diagnostic system, or source of clinical advice. It has not been validated for patient care or deployment.
 
-SLEEPJEV is a signal-native, JEV-inspired research implementation for typed
+SLEEPJEV — also written as **Sleep-JEV** or **SleepJEV** in search and discussion —
+is a signal-native, JEV-inspired research implementation for typed
 runtime decisions over long-horizon polysomnography (PSG). It supports the JEV
 decision primitives **Choice**, **Noul**, and **Score**: ask many explicit sleep
 questions over one recording, inspect probabilities, and reuse the same encoded
@@ -65,7 +66,18 @@ query at runtime.
 
 The demo shows one shared overnight PSG state serving multiple runtime sleep questions in parallel, with Choice / Noul / Score outputs, probabilities, confidence, action gates, latency, and K-Symmetry. The public page is a replay snapshot generated from verified real SHHS feature-cache inference; it is clearly labeled and does not claim a live PyTorch backend. For real checkpoint-backed inference, run the local server described in [`demo/README.md`](demo/README.md).
 
-For terminology and scope, see [`docs/jev.md`](docs/jev.md). SLEEPJEV is an independent JEV-inspired research implementation; it is not the official TypeSafe AI Jev model or SDK.
+For terminology and scope, see [`docs/jev.md`](docs/jev.md). SLEEPJEV is an
+independent JEV-inspired research implementation using local weights and PSG
+features; it is not the official TypeSafe AI Jev model or SDK, and it does not
+claim to call the TypeSafe AI Jev API.
+
+### Naming and discovery
+
+The canonical project and Python package name is `SLEEPJEV` / `sleepjev`.
+`Sleep-JEV` and `SleepJEV` are supported search aliases, not separate projects.
+This convention keeps package imports, repository links, releases, and
+citations stable while making the project discoverable through common Jev
+spellings.
 
 ## Related project
 
