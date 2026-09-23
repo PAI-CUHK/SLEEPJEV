@@ -9,7 +9,7 @@ authors:
 version: 0.1.0
 date-released: 2026-09-23
 license: MIT
-repository-code: "https://github.com/liuyisi123/SLEEPJEV"
+repository-code: "https://github.com/PAI-CUHK/SLEEPJEV"
 abstract: >-
   A signal-native research implementation for reusable overnight PSG states,
   sparse temporal retrieval, and runtime option-conditioned decisions.

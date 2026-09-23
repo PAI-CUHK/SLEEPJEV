@@ -14,7 +14,7 @@ dependencies = [
     "scikit-learn>=1.3",
     "torch>=2.1",
 ]
-keywords = ["sleep-analysis", "polysomnography", "PSG", "event-retrieval", "JEV"]
+keywords = ["sleep-analysis", "polysomnography", "PSG", "sleep-staging", "EEG", "EOG", "event-retrieval", "sparse-retrieval", "runtime-inference", "multi-task-serving", "typed-decisions", "Choice", "Noul", "Score", "JEV", "JEV-inspired"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Science/Research",

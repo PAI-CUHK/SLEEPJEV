@@ -21,10 +21,19 @@
   <a href="https://github.com/PAI-CUHK/SLEEPJEV">GitHub repository</a>
 </p>
 
+<p align="center">
+  <a href="https://pai-cuhk.github.io/SLEEPJEV/"><strong>▶ OPEN THE INTERACTIVE DEMO</strong></a>
+  &nbsp; · &nbsp;
+  <a href="demo/README.md">Run the real local inference demo</a>
+</p>
+
 > **Research prototype.** SLEEPJEV is not a medical device, diagnostic system, or source of clinical advice. It has not been validated for patient care or deployment.
 
-SLEEPJEV is a signal-native research implementation for asking many explicit,
-runtime sleep questions over one long polysomnography (PSG) recording. It encodes
+SLEEPJEV is a signal-native, JEV-inspired research implementation for typed
+runtime decisions over long-horizon polysomnography (PSG). It supports the JEV
+decision primitives **Choice**, **Noul**, and **Score**: ask many explicit sleep
+questions over one recording, inspect probabilities, and reuse the same encoded
+state across a multi-task workload. It encodes
 the overnight signal once, builds serving indexes over the resulting state, reads a
 query-conditioned subset of time tokens, and scores the options supplied by the
 query at runtime.
@@ -33,11 +42,19 @@ query at runtime.
 
 <p align="center"><sub>One overnight PSG representation supports many runtime semantic decisions.</sub></p>
 
-## Live Demo
+## Interactive Demo
+
+<p align="center">
+  <a href="https://pai-cuhk.github.io/SLEEPJEV/">
+    <img src="demo/sleepjev-logo.svg" alt="Open SLEEPJEV Runtime Query Demo" width="180">
+  </a>
+</p>
 
 <p align="center"><a href="https://pai-cuhk.github.io/SLEEPJEV/"><strong>Open the public SLEEPJEV Runtime Query Demo →</strong></a></p>
 
-The public page is a lightweight replay generated from verified local SLEEPJEV outputs. The local Python demo remains available in [`demo/`](demo/) for real checkpoint-backed inference. The public replay is clearly labeled and does not claim live backend inference.
+The demo shows one shared overnight state serving multiple runtime questions in parallel, with live-looking probability transitions, Choice / Noul / Score outputs, confidence, action gates, latency, and K-Symmetry. The public page is a replay snapshot generated from verified real SHHS feature-cache inference; it is clearly labeled and does not claim a live PyTorch backend. For real checkpoint-backed inference, run the local server described in [`demo/README.md`](demo/README.md).
+
+**Search terms:** JEV, SLEEPJEV, JEV-inspired, typed decisions, Choice, Noul, Score, runtime option scoring, long-horizon PSG, polysomnography, sleep staging, sparse temporal retrieval, multi-task serving, probability-based decisions.
 
 ## Why SLEEPJEV?
 
