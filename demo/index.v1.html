@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="SLEEPJEV runtime query console demo" />
+  <title>SLEEPJEV · Runtime Query Console</title>
+  <style>
+    :root {
+      --ink: #10202b;
+      --muted: #6a7b84;
+      --line: #d9e4e6;
+      --paper: #f7fbfa;
+      --card: #ffffff;
+      --teal: #087f78;
+      --teal-deep: #075f5c;
+      --teal-soft: #dff3ef;
+      --orange: #d86736;
+      --orange-soft: #fff0e8;
+      --blue: #3279b8;
+      --blue-soft: #e6f0fb;
+      --violet: #7a68b3;
+      --shadow: 0 14px 40px rgba(35, 70, 73, .08);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: var(--paper); font: 15px/1.45 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    button, select, input { font: inherit; }
+    button { cursor: pointer; }
+    .app { min-height: 100vh; display: grid; grid-template-columns: 244px minmax(0, 1fr); }
+    .sidebar { background: #0d252d; color: #d7eceb; padding: 24px 18px; display: flex; flex-direction: column; gap: 24px; }
+    .brand { display: flex; gap: 11px; align-items: center; }
+    .mark { width: 32px; height: 32px; border: 1.5px solid #76d8cf; border-radius: 50%; position: relative; }
+    .mark:before, .mark:after { content: ""; position: absolute; left: 7px; right: 7px; height: 1px; background: #76d8cf; transform: rotate(32deg); top: 15px; }
+    .mark:after { transform: rotate(-32deg); }
+    .brand strong { display:block; letter-spacing: .1em; font-size: 16px; color: #f4ffff; }
+    .brand span { color: #89b4b2; font-size: 11px; letter-spacing: .04em; }
+    .side-label { color: #7fa9a8; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 8px; }
+    .night-card { border: 1px solid #2b4b50; background: #12313a; border-radius: 10px; padding: 13px; }
+    .night-card strong { color: #fff; display:block; font-size: 14px; }
+    .night-card small { color: #8cb4b1; display:block; margin-top: 3px; }
+    .side-row { display:flex; justify-content:space-between; align-items:center; padding: 8px 0; color: #9ebfbd; border-bottom: 1px solid #23434a; }
+    .side-row:last-child { border-bottom: 0; }
+    .side-row b { color: #edf9f7; font-weight: 600; }
+    .status { display:flex; align-items:center; gap:7px; font-size: 12px; color: #a3d9c9; }
+    .dot { width:7px; height:7px; border-radius:50%; background:#51d4a5; box-shadow: 0 0 0 4px rgba(81,212,165,.12); }
+    .side-note { margin-top:auto; color: #789898; font-size: 12px; }
+    .side-note span { color: #a9c7c5; }
+    main { min-width:0; padding: 22px 27px 26px; overflow:hidden; }
+    .topbar { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom: 19px; }
+    .eyebrow { color: var(--teal); text-transform:uppercase; letter-spacing:.16em; font-size: 11px; font-weight: 700; }
+    h1 { font-size: 25px; letter-spacing: -.035em; line-height: 1.1; margin: 5px 0 5px; }
+    .subhead { color: var(--muted); margin: 0; font-size: 14px; }
+    .top-actions { display:flex; align-items:center; gap: 14px; }
+    .pill { border:1px solid var(--line); color: var(--teal-deep); background:white; border-radius: 99px; padding: 8px 11px; font-size:12px; }
+    .grid { display:grid; grid-template-columns: minmax(500px, 1.55fr) minmax(330px, .88fr); gap: 17px; align-items:start; }
+    .card { background: var(--card); border:1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); }
+    .card-head { padding: 16px 18px 12px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #edf2f2; }
+    .card-head h2 { margin:0; font-size: 14px; letter-spacing:.01em; }
+    .card-head small { color:var(--muted); font-size: 12px; }
+    .state-card { min-height: 453px; }
+    .state-body { padding: 15px 18px 18px; }
+    .signal-strip { display:grid; grid-template-columns: 1.3fr 1fr 1fr; gap:9px; margin-bottom: 17px; }
+    .signal { background:#f5f9f9; border:1px solid #e2eeee; border-radius: 8px; padding: 9px 10px; }
+    .signal span { display:block; font-size: 10px; color: var(--muted); letter-spacing:.1em; text-transform:uppercase; margin-bottom:3px; }
+    .signal strong { font-size: 14px; }
+    .spark { height: 26px; margin-top:6px; background:none; opacity:1; overflow:hidden; position:relative; }
+    .spark svg { display:block; width:100%; height:26px; }
+    .spark path { fill:none; stroke:var(--teal); stroke-width:1.5; vector-effect:non-scaling-stroke; }
+    .spark .signal-window { fill:rgba(216,103,54,.18); stroke:var(--orange); stroke-width:1; vector-effect:non-scaling-stroke; transition:x .55s ease, width .55s ease; }
+    .timeline-wrap { border:1px solid #e0e9e9; border-radius:9px; padding: 12px 12px 10px; position:relative; }
+    .timeline-meta { display:flex; justify-content:space-between; color:var(--muted); font-size:11px; margin-bottom: 10px; }
+    .timeline { display:grid; gap:5px; }
+    .lane { display:grid; grid-template-columns: 47px 1fr; align-items:center; gap: 8px; }
+    .lane label { font-size:11px; color:var(--muted); }
+    .track { display:flex; height: 24px; gap:2px; position:relative; }
+    .seg { flex:1; border-radius:3px; background:#cddddd; min-width:4px; }
+    .seg.w { background:#e8b36f; } .seg.n1 { background:#9fd4ca; } .seg.n2 { background:#54aaa7; } .seg.n3 { background:#337b90; } .seg.rem { background:#7b65ae; }
+    .track .window { position:absolute; top:-4px; bottom:-4px; left:35%; width:27%; border:2px solid var(--orange); border-radius:5px; background: rgba(255,240,232,.25); pointer-events:none; transition:left .55s ease, width .55s ease; box-shadow:0 0 0 0 rgba(216,103,54,.15); }
+    .track .window.live { animation:windowPulse 1.8s ease-in-out infinite; }
+    @keyframes windowPulse { 50% { box-shadow:0 0 0 5px rgba(216,103,54,.08); } }
+    .event-rail { margin: 10px 0 0 55px; height: 18px; position:relative; border-top:1px solid #cad9d9; }
+    .event-rail i { position:absolute; top:-5px; width:9px; height:9px; background:var(--orange); transform:rotate(45deg); border-radius:2px; }
+    .event-rail i:nth-child(1){left:18%}.event-rail i:nth-child(2){left:39%}.event-rail i:nth-child(3){left:58%}.event-rail i:nth-child(4){left:81%}
+    .legend { display:flex; flex-wrap:wrap; gap: 11px; margin: 10px 0 0 55px; color:var(--muted); font-size:11px; }
+    .legend span { display:flex; align-items:center; gap:5px; } .legend b { width:8px; height:8px; border-radius:2px; display:inline-block; }
+    .window-readout { display:flex; align-items:center; justify-content:space-between; border-top: 1px solid #edf2f2; margin-top: 12px; padding-top: 11px; }
+    .window-readout span { color:var(--muted); font-size:12px; } .window-readout strong { color:var(--orange); font-size:13px; }
+    .query-card { margin-top:17px; }
+    .query-body { padding: 16px 18px 18px; }
+    .preset-row { display:flex; gap:7px; flex-wrap:wrap; margin-bottom: 14px; }
+    .preset { border:1px solid var(--line); background:#f8fbfb; border-radius: 7px; padding: 7px 9px; color:var(--teal-deep); font-size:12px; }
+    .preset.active, .preset:hover { background: var(--teal-soft); border-color:#9bd4cc; }
+    .form-grid { display:grid; grid-template-columns: 1.2fr .8fr .8fr; gap:10px; }
+    .field label { display:block; font-size:11px; color:var(--muted); margin-bottom: 5px; letter-spacing:.03em; }
+    select { width:100%; border:1px solid var(--line); border-radius:7px; padding:9px 10px; color:var(--ink); background:#fff; }
+    .option-line { margin-top: 13px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .option-label { color:var(--muted); font-size:11px; white-space:nowrap; }
+    .chips { display:flex; gap:6px; flex-wrap:wrap; }
+    .chip { border:1px solid #cfe1df; background:#f5faf9; border-radius:99px; padding:6px 9px; font-size:12px; color:#376a6b; }
+    .chip.off { opacity:.45; text-decoration:line-through; }
+    .run { margin-top:16px; width:100%; border:0; border-radius:7px; padding:10px; color:#fff; background:var(--teal); font-weight:700; letter-spacing:.02em; }
+    .run:hover { background:var(--teal-deep); }
+    .auto-row { display:flex; align-items:center; gap:9px; margin-top:9px; }
+    .auto { flex:0 0 auto; border:1px solid #9bd4cc; border-radius:7px; padding:8px 11px; color:var(--teal-deep); background:#f4fbfa; font-weight:700; font-size:12px; }
+    .auto:hover, .auto.on { color:#fff; background:var(--teal); border-color:var(--teal); }
+    .auto-dot { width:7px; height:7px; border-radius:50%; background:#a8bdbc; display:inline-block; margin-right:5px; }
+    .auto.on .auto-dot { background:#caffef; box-shadow:0 0 0 4px rgba(202,255,239,.15); animation:pulse 1.2s infinite; }
+    .auto-status { color:var(--muted); font-size:11px; }
+    @keyframes pulse { 50% { opacity:.45; transform:scale(.75); } }
+    .decision-card { overflow:hidden; }
+    .decision-head { background:#0d3a3b; color:#eafffa; padding: 18px 19px; }
+    .decision-head .eyebrow { color:#86ddd0; }
+    .decision-head h2 { margin:6px 0 3px; font-size:21px; letter-spacing:-.03em; }
+    .decision-head p { margin:0; color:#a6cbc7; font-size:12px; }
+    .decision-body { padding: 16px 18px 17px; }
+    .confidence { display:flex; justify-content:space-between; align-items:end; margin-bottom: 15px; }
+    .confidence strong { font-size: 40px; letter-spacing:-.07em; color:var(--teal-deep); line-height:.9; }
+    .confidence small { color:var(--muted); font-size:11px; text-align:right; }
+    .prob-row { margin: 13px 0; } .prob-top { display:flex; justify-content:space-between; font-size:12px; margin-bottom:6px; } .prob-top b { font-weight:500; } .prob-top strong { font-size:12px; }
+    .bar { height: 8px; background:#edf3f2; border-radius: 5px; overflow:hidden; } .bar i { display:block; height:100%; border-radius:5px; background:var(--teal); transition:width .55s ease; } .bar i.orange{background:var(--orange)} .bar i.violet{background:var(--violet)} .bar i.blue{background:var(--blue)}
+    .decision-foot { border-top:1px solid #edf2f2; margin-top:17px; padding-top:14px; display:grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+    .metric { background:#f7faf9; border-radius:7px; padding:8px; } .metric small { display:block; font-size:10px; color:var(--muted); } .metric strong { display:block; margin-top:3px; font-size:13px; }
+    .task-block { border-top:1px solid #edf2f2; padding:11px 0 2px; }
+    .task-block.evaluating { opacity:.72; }
+    .task-block.evaluating .task-head strong { color:#93aaa9; }
+    .task-block.evaluating .bar i { width:18% !important; background:#b8cfcc; animation:scanbar .75s ease-in-out infinite alternate; }
+    .task-block.resolved { animation:resolveCard .35s ease-out; }
+    .gate { display:inline-flex; align-items:center; gap:5px; margin-left:6px; padding:2px 6px; border-radius:99px; background:#edf7f5; color:var(--teal-deep); font-size:9px; letter-spacing:.06em; font-weight:700; vertical-align:1px; }
+    .gate.review { background:var(--orange-soft); color:#a44e2c; }
+    @keyframes scanbar { from { transform:translateX(-12%); opacity:.5; } to { transform:translateX(14%); opacity:1; } }
+    @keyframes resolveCard { from { transform:translateY(4px); opacity:.35; } to { transform:translateY(0); opacity:1; } }
+    .task-head { display:grid; grid-template-columns:1fr auto; gap:2px 10px; align-items:baseline; margin-bottom:7px; }
+    .task-head span { font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; }
+    .task-head strong { color:var(--teal-deep); font-size:13px; }
+    .task-head small { grid-column:1 / -1; color:#8b9a9d; font-size:10px; }
+    .task-block .prob-row { margin:7px 0; } .task-block .bar { height:5px; }
+    .evidence-card { margin-top:17px; }
+    .evidence { padding: 14px 18px 17px; }
+    .evidence-line { display:grid; grid-template-columns: 102px 1fr 53px; align-items:center; gap: 11px; margin:11px 0; } .evidence-line span { font-size:12px; color:var(--muted); } .evidence-line b { font-size:12px; color:var(--teal-deep); text-align:right; }
+    .evidence-track { height:6px; border-radius:5px; background:#ecf2f1; overflow:hidden; } .evidence-track i { display:block; height:100%; background:linear-gradient(90deg,#6ec7bd,var(--teal)); }
+    .reuse { margin-top: 16px; padding: 12px 13px; border-radius: 8px; background: var(--orange-soft); color:#7a4b35; font-size:12px; display:flex; gap:10px; align-items:flex-start; }
+    .reuse strong { display:block; color:#9c4c25; margin-bottom:2px; }
+    .disclaimer { color:#8a999d; font-size:11px; margin-top:19px; text-align:center; }
+    @media (max-width: 1040px) { .app { grid-template-columns: 205px minmax(0,1fr); } main{padding:20px}.grid{grid-template-columns:1fr}.decision-card{max-width:none} }
+    @media (max-width: 680px) { .app{display:block}.sidebar{display:none}.topbar{display:block}.top-actions{margin-top:14px}.grid{display:block}.state-card,.query-card,.decision-card,.evidence-card{margin-bottom:14px}.form-grid{grid-template-columns:1fr}.signal-strip{grid-template-columns:1fr}.option-line{display:block}.option-label{display:block;margin-bottom:7px}.main{padding:16px} }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand"><div class="mark"></div><div><strong>SLEEPJEV</strong><span>runtime query console</span></div></div>
+      <div>
+        <div class="side-label">Active recording</div>
+        <div class="night-card"><strong id="record">SHHS-200001 · Night 01</strong><small id="duration">08 h 00 m · 960 epochs</small><div class="status" style="margin-top:10px"><i class="dot"></i> overnight cache ready</div></div>
+      </div>
+      <div>
+        <div class="side-label">Shared state</div>
+        <div class="side-row"><span>Local tokens</span><b id="localTokens">960</b></div><div class="side-row"><span>Coarse tokens</span><b id="coarseTokens">96</b></div><div class="side-row"><span>Night summary</span><b>1</b></div><div class="side-row"><span>Readout budget</span><b>128</b></div>
+      </div>
+      <div>
+        <div class="side-label">Serving session</div>
+        <div class="side-row"><span>Queries answered</span><b id="sideQueries">0</b></div><div class="side-row"><span>Cache build</span><b id="cacheBuild">loading</b></div><div class="side-row"><span>Mode</span><b style="color:#82dccd">real checkpoint</b></div>
+      </div>
+      <div class="side-note">JEV-inspired contract<br><span>evidence + question + options → probabilities</span></div>
+    </aside>
+    <main>
+      <div class="topbar"><div><div class="eyebrow">Long-horizon state / multi-task serving</div><h1>One night. Four questions. One read.</h1><p class="subhead">A shared overnight representation answers a live workload in parallel.</p></div><div class="top-actions"><div class="pill">● Real SHHS replay</div><div class="pill">4-way fan-out</div></div></div>
+      <div class="grid">
+        <section>
+          <div class="card state-card"><div class="card-head"><h2>OVERNIGHT STATE</h2><small id="recordHeader">SHHS-200001 · cached feature slice</small></div><div class="state-body">
+            <div class="signal-strip"><div class="signal"><span>Real EEG · epoch feature</span><strong>EEG(sec) · std</strong><div class="spark"></div></div><div class="signal"><span>Real respiration · epoch feature</span><strong>THOR RES · std</strong><div class="spark"></div></div><div class="signal"><span>Real SpO₂ · epoch feature</span><strong>SaO2 · std</strong><div class="spark"></div></div></div>
+            <div class="timeline-wrap"><div class="timeline-meta"><span id="windowMeta">Selected window · epoch 338–596</span><span>30 s / epoch · live replay</span></div><div class="timeline">
+              <div class="lane"><label>Stage</label><div class="track stage-track"></div></div>
+              <div class="lane"><label>Coarse</label><div class="track"><b class="seg" style="background:#c7d8e5"></b><b class="seg" style="background:#bfd1e2"></b><b class="seg" style="background:#a9c5dd"></b><b class="seg" style="background:#cbd9e2"></b><b class="seg" style="background:#7fa8c7"></b><b class="seg" style="background:#cbd9e2"></b><b class="seg" style="background:#9dbbdb"></b><b class="seg" style="background:#cbd9e2"></b><b class="seg" style="background:#88acd0"></b><b class="seg" style="background:#cbd9e2"></b><b class="seg" style="background:#b0cbe0"></b><b class="seg" style="background:#cbd9e2"></b><b class="seg" style="background:#a2c0dc"></b><i class="window"></i></div></div>
+              <div class="lane"><label>Hourly</label><div class="track"><b class="seg" style="background:#bddfd9"></b><b class="seg" style="background:#b6dad4"></b><b class="seg" style="background:#9dccca"></b><b class="seg" style="background:#b6dad4"></b><b class="seg" style="background:#82bbb9"></b><b class="seg" style="background:#b6dad4"></b><b class="seg" style="background:#abd4cf"></b><b class="seg" style="background:#b6dad4"></b><b class="seg" style="background:#73b2b0"></b><b class="seg" style="background:#b6dad4"></b><b class="seg" style="background:#91c6c3"></b><b class="seg" style="background:#b6dad4"></b><b class="seg" style="background:#9dcfcb"></b><i class="window"></i></div></div>
+            </div><div class="legend"><span><b style="background:#e8b36f"></b>W</span><span><b style="background:#9fd4ca"></b>N1</span><span><b style="background:#54aaa7"></b>N2</span><span><b style="background:#337b90"></b>N3</span><span><b style="background:#7b65ae"></b>REM</span></div><div class="window-readout"><span>Real cached recording</span><strong id="stageSummary">stage counts loading</strong></div></div>
+          </div></div>
+          <div class="card query-card"><div class="card-head"><h2>RUNTIME WORKLOAD</h2><small id="queryId">connecting to checkpoint…</small></div><div class="query-body"><div class="preset-row"><button class="preset active" data-preset="full">All stage options</button><button class="preset" data-preset="rem">REM-focused</button><button class="preset" data-preset="n2rem">N2 vs REM</button><button class="preset" data-preset="nrem">NREM / REM</button></div><div class="form-grid"><div class="field"><label>Shared time window</label><select id="windowPreset"><option value="live">338–596 · 2 h 09 m</option><option value="early">0–240 · first 2 h</option><option value="late">720–960 · last 2 h</option></select></div><div class="field"><label>Start epoch</label><input id="start" type="number" value="338" min="0" step="1" /></div><div class="field"><label>End epoch</label><input id="end" type="number" value="596" min="1" step="1" /></div></div><div class="option-line"><span class="option-label">Parallel task set</span><div class="chips" id="chips"><button class="chip">Sleep stage</button><button class="chip">Apnea</button><button class="chip">Hypopnea</button><button class="chip">Arousal</button></div></div><button class="run" id="run">Run 4 questions on shared cache&nbsp;&nbsp;↗</button><div class="auto-row"><button class="auto on" id="autoplay"><span class="auto-dot"></span><span id="autoLabel">Pause auto replay</span></button><span class="auto-status" id="autoStatus">streaming shared windows across the night</span></div></div></div>
+        </section>
+        <aside>
+          <div class="card decision-card"><div class="decision-head"><div class="eyebrow">PARALLEL JEV DECISIONS</div><h2 id="decisionTitle">Four tasks · one cached night</h2><p id="decisionSub">same evidence window · answers returned together</p></div><div class="decision-body"><div class="confidence"><div><div class="eyebrow" style="letter-spacing:.1em">Workload fan-out</div><strong id="leading">4×</strong></div><small>shared scorer<br><b style="color:var(--teal-deep)">parallel runtime read</b></small></div><div id="taskList"></div><div class="decision-foot"><div class="metric"><small>Questions answered</small><strong id="tokens">4 / 4</strong></div><div class="metric"><small>Fan-out latency</small><strong id="latency">loading</strong></div><div class="metric"><small>Readout mode</small><strong>sparse</strong></div></div></div></div>
+          <div class="card evidence-card"><div class="card-head"><h2>LONG-HORIZON AUDIT</h2><small>why this scales</small></div><div class="evidence"><div class="evidence-line"><span>Overnight cache</span><div class="evidence-track"><i style="width:100%"></i></div><b id="auditEpochText">960 ep</b></div><div class="evidence-line"><span>One-time encode</span><div class="evidence-track"><i style="width:22%"></i></div><b id="auditEncodeText">loading</b></div><div class="evidence-line"><span>Task fan-out</span><div class="evidence-track"><i style="width:80%"></i></div><b id="auditFanoutText">4×</b></div><div class="evidence-line"><span>Gold labels read by selector</span><div class="evidence-track"><i style="width:0%"></i></div><b>0</b></div><div class="reuse"><span>↻</span><div><strong id="reuseTitle">Real cache reused</strong>One long-horizon representation feeds stage, apnea, hypopnea and arousal questions in the same runtime batch.</div></div></div></div>
+        </aside>
+      </div>
+      <div class="disclaimer">Research prototype · real SHHS feature slice + formal-small checkpoint · probabilities describe evidence/state relationships, not disease risk or clinical advice.</div>
+    </main>
+  </div>
+  <script>
+    const presets = { full:['W','N1','N2','N3','REM'], rem:['W','N2','REM'], n2rem:['N2','REM'], nrem:['N1','N2','N3','REM'] };
+    const startInput = document.querySelector('#start'), endInput = document.querySelector('#end');
+    const title = document.querySelector('#decisionTitle'), sub = document.querySelector('#decisionSub'), leading = document.querySelector('#leading');
+    const taskList = document.querySelector('#taskList'), queryId = document.querySelector('#queryId'), sideQueries = document.querySelector('#sideQueries'), tokens = document.querySelector('#tokens'), latency = document.querySelector('#latency');
+    let active = 'full';
+    let nightEpochs = 960;
+    let replayTimer = null;
+    let replayBusy = false;
+    let replayStart = Number(startInput.value);
+    const replayStep = 30;
+    const replayLength = 30;
+    function renderOptions(kind) {
+      active = kind;
+      document.querySelectorAll('.preset').forEach(b => b.classList.toggle('active', b.dataset.preset === kind));
+      document.querySelector('#chips').innerHTML = presets[kind].map(x => '<button class="chip">' + x + '</button>').join('');
+    }
+    function renderEvaluating() {
+      const labels = [['sleep_stage','Choice'],['apnea_burden','Noul'],['hypopnea_burden','Noul'],['arousal_burden','Noul']];
+      taskList.innerHTML = labels.map(([label, primitive]) => '<div class="task-block evaluating"><div class="task-head"><span>' + label + ' · ' + primitive + '</span><strong>evaluating…</strong><small>parallel gate open · reading shared evidence</small></div><div class="prob-row"><div class="prob-top"><b>probability distribution</b><strong>…</strong></div><div class="bar"><i></i></div></div></div>').join('');
+      document.querySelector('#decisionSub').textContent = 'four typed questions evaluating the live evidence window…';
+      document.querySelector('#tokens').textContent = '0 / 4';
+    }
+    function gateFor(task) {
+      const level = task.confidence >= .90 ? 'AUTO' : task.confidence >= .70 ? 'REVIEW' : 'HUMAN REVIEW';
+      return '<span class="gate ' + (level === 'AUTO' ? '' : 'review') + '">' + level + '</span>';
+    }
+    function renderSignalTraces(traces) {
+      const cards = document.querySelectorAll('.spark');
+      ['EEG','RESP','SPO2'].forEach((channel, cardIndex) => {
+        const values = traces[channel] || [];
+        const points = values.map((value, index) => (index * 400 / Math.max(1, values.length - 1)).toFixed(1) + ',' + (25 - value * 22).toFixed(1)).join(' ');
+        cards[cardIndex].innerHTML = '<svg viewBox="0 0 400 26" preserveAspectRatio="none" aria-label="real ' + channel + ' epoch feature trace"><polyline points="' + points + '" fill="none" stroke="currentColor" /></svg><span class="signal-window"></span>';
+        const path = cards[cardIndex].querySelector('polyline');
+        path.style.stroke = channel === 'SPO2' ? '#3279b8' : channel === 'RESP' ? '#d86736' : '#087f78';
+        path.style.strokeWidth = '2';
+      });
+    }
+    function drawResult(data) {
+      title.textContent = 'Four tasks · epochs ' + data.window.start_epoch + '–' + data.window.end_epoch;
+      sub.textContent = 'real model output · same cached evidence window · answers returned together';
+      leading.textContent = data.fanout + '×';
+      tokens.textContent = data.fanout + ' / ' + data.fanout;
+      latency.textContent = data.latency_ms.toFixed(2) + ' ms';
+      queryId.textContent = 'batch #' + data.query_id + ' · ' + data.fanout + ' questions';
+      taskList.innerHTML = data.tasks.map((task, index) => {
+        const rows = Object.entries(task.probabilities).map(([name, value], row) => '<div class="prob-row"><div class="prob-top"><b>' + name + '</b><strong>' + value.toFixed(4) + '</strong></div><div class="bar"><i class="' + (row === 0 ? 'orange' : row === 1 ? '' : 'violet') + '" style="width:' + (value * 100) + '%"></i></div></div>').join('');
+        return '<div class="task-block resolved"><div class="task-head"><span>' + task.target + ' · ' + task.primitive + '</span><strong>' + task.prediction + gateFor(task) + '</strong><small>' + task.selected_tokens + ' tokens · ' + task.confidence.toFixed(4) + ' confidence · live evidence window</small></div>' + rows + '</div>';
+      }).join('');
+      sideQueries.textContent = data.query_id;
+      document.querySelector('#reuseTitle').textContent = 'Real cache reused for batch #' + data.query_id;
+      document.querySelector('#auditEpochText').textContent = data.overnight_epochs + ' ep';
+      document.querySelector('#auditFanoutText').textContent = data.fanout + '×';
+      updateWindow(data.window.start_epoch, data.window.end_epoch);
+    }
+    function updateWindow(start, end) {
+      const safeStart = Math.max(0, Math.min(nightEpochs - 1, start));
+      const safeEnd = Math.max(safeStart + 1, Math.min(nightEpochs, end));
+      startInput.value = safeStart;
+      endInput.value = safeEnd;
+      document.querySelector('#windowMeta').textContent = 'Selected window · epoch ' + safeStart + '–' + safeEnd;
+      const left = (safeStart / nightEpochs) * 100;
+      const width = ((safeEnd - safeStart) / nightEpochs) * 100;
+      document.querySelectorAll('.track .window').forEach(node => { node.style.left = left + '%'; node.style.width = width + '%'; node.classList.add('live'); });
+      document.querySelectorAll('.signal-window').forEach(node => { node.style.position = 'absolute'; node.style.display = 'block'; node.style.top = '0'; node.style.bottom = '0'; node.style.left = left + '%'; node.style.width = width + '%'; });
+    }
+    async function runQuery() {
+      renderEvaluating();
+      const response = await fetch('/api/query', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({kind:active,start:Number(startInput.value),end:Number(endInput.value)}) });
+      const data = await response.json();
+      if (data.error) { alert(data.error); return; }
+      await new Promise(resolve => setTimeout(resolve, 180));
+      drawResult(data);
+    }
+    async function loadState() {
+      const data = await (await fetch('/api/state')).json();
+      nightEpochs = data.epochs;
+      document.querySelector('#record').textContent = data.record_id + ' · Night 01';
+      document.querySelector('#recordHeader').textContent = data.record_id + ' · cached feature slice';
+      document.querySelector('#duration').textContent = (data.epochs * data.epoch_seconds / 3600).toFixed(2) + ' h · ' + data.epochs + ' epochs';
+      document.querySelector('#localTokens').textContent = data.epochs;
+      document.querySelector('#coarseTokens').textContent = Math.ceil(data.epochs / 10);
+      document.querySelector('#cacheBuild').textContent = data.encode_ms.toFixed(2) + ' ms';
+      document.querySelector('#auditEncodeText').textContent = data.encode_ms.toFixed(1) + ' ms';
+      document.querySelector('#auditEpochText').textContent = data.epochs + ' ep';
+      document.querySelector('#stageSummary').textContent = Object.entries(data.stage_labels).map(x => x[0] + ' ' + x[1]).join(' · ');
+      document.querySelector('.stage-track').innerHTML = data.stage_sequence.map(x => '<b class="seg ' + x.toLowerCase() + '"></b>').join('') + '<i class="window"></i>';
+      renderSignalTraces(data.channel_traces);
+      renderOptions('full');
+      await runQuery();
+      updateWindow(Number(startInput.value), Number(endInput.value));
+      startAutoReplay();
+    }
+    async function replayStepOnce() {
+      if (replayBusy) return;
+      replayBusy = true;
+      let next = replayStart + replayStep;
+      if (next + replayLength > nightEpochs) next = 0;
+      replayStart = next;
+      startInput.value = replayStart;
+      endInput.value = replayStart + replayLength;
+      document.querySelector('#autoStatus').textContent = 'reading epochs ' + replayStart + '–' + (replayStart + replayLength) + ' · four questions in flight';
+      try { await runQuery(); document.querySelector('#autoStatus').textContent = 'streaming shared windows across the night'; }
+      catch (error) { document.querySelector('#autoStatus').textContent = 'replay paused · backend unavailable'; stopAutoReplay(); }
+      replayBusy = false;
+    }
+    function startAutoReplay() {
+      if (replayTimer) return;
+      document.querySelector('#autoplay').classList.add('on');
+      document.querySelector('#autoLabel').textContent = 'Pause auto replay';
+      replayTimer = setInterval(replayStepOnce, 2200);
+    }
+    function stopAutoReplay() {
+      if (replayTimer) clearInterval(replayTimer);
+      replayTimer = null;
+      document.querySelector('#autoplay').classList.remove('on');
+      document.querySelector('#autoLabel').textContent = 'Start auto replay';
+      document.querySelector('#autoStatus').textContent = 'paused · press start to continue the night';
+    }
+    document.querySelectorAll('.preset').forEach(b => b.addEventListener('click', () => { renderOptions(b.dataset.preset); runQuery(); }));
+    document.querySelector('#run').addEventListener('click', runQuery);
+    document.querySelector('#autoplay').addEventListener('click', () => replayTimer ? stopAutoReplay() : startAutoReplay());
+    document.querySelector('#windowPreset').addEventListener('change', event => {
+      const windows = { live:[338,368], early:[0,240], late:[720,960] };
+      const [start,end] = windows[event.target.value];
+      replayStart = start;
+      startInput.value = start;
+      endInput.value = end;
+      runQuery();
+    });
+    [startInput,endInput].forEach(input => input.addEventListener('change', () => { replayStart = Number(startInput.value); }));
+    loadState().catch(error => { document.querySelector('#queryId').textContent = 'backend unavailable'; console.error(error); });
+  </script>
+</body>
+</html>

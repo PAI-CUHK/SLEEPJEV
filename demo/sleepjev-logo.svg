@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 180" role="img" aria-labelledby="title desc">
+  <title id="title">SLEEPJEV logo</title>
+  <desc id="desc">A teal overnight waveform entering a structured decision node beside the SLEEPJEV wordmark.</desc>
+  <rect width="760" height="180" rx="20" fill="#f8fbfc"/>
+  <g transform="translate(38 28)">
+    <rect x="0" y="0" width="124" height="124" rx="26" fill="#0b8f87"/>
+    <path d="M17 76h18l10-28 16 56 17-73 14 45h25" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="97" cy="35" r="9" fill="#f07c5a"/>
+    <path d="M97 44v22M97 66l-18 16M97 66l18 16" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="79" cy="86" r="7" fill="#fff"/><circle cx="115" cy="86" r="7" fill="#fff"/>
+  </g>
+  <text x="196" y="91" fill="#102a43" font-family="Inter, Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="62" font-weight="700" letter-spacing="2">SLEEPJEV</text>
+  <text x="200" y="126" fill="#0b8f87" font-family="Inter, Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="18" font-weight="600" letter-spacing="3">RUNTIME PSG DECISIONS</text>
+</svg>
