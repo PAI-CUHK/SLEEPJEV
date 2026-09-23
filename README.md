@@ -1,10 +1,12 @@
+# SLEEPJEV: Runtime Semantic Sleep Analysis over Long-Horizon Polysomnography (PSG)
+
 <p align="center">
   <img src="docs/assets/sleepjev-logo.svg" alt="SLEEPJEV logo" width="520">
 </p>
 
 <p align="center">
-  <strong>JEV-inspired runtime semantic decisions for long-horizon PSG.</strong><br>
-  Reusable overnight encoding · sparse temporal retrieval · runtime option scoring
+  <strong>Open-source PyTorch research framework for polysomnography (PSG), sleep staging, and runtime sleep analysis.</strong><br>
+  Reusable overnight representations · sparse temporal retrieval · option-conditioned inference
 </p>
 
 <p align="center">
@@ -58,9 +60,7 @@ query at runtime.
 
 <p align="center"><a href="https://pai-cuhk.github.io/SLEEPJEV/"><strong>Open the public SLEEPJEV Runtime Query Demo →</strong></a></p>
 
-The demo shows one shared overnight state serving multiple runtime questions in parallel, with live-looking probability transitions, Choice / Noul / Score outputs, confidence, action gates, latency, and K-Symmetry. The public page is a replay snapshot generated from verified real SHHS feature-cache inference; it is clearly labeled and does not claim a live PyTorch backend. For real checkpoint-backed inference, run the local server described in [`demo/README.md`](demo/README.md).
-
-**Search terms:** JEV, SLEEPJEV, JEV-inspired, typed decisions, Choice, Noul, Score, runtime option scoring, long-horizon PSG, polysomnography, sleep staging, sparse temporal retrieval, multi-task serving, probability-based decisions.
+The demo shows one shared overnight PSG state serving multiple runtime sleep questions in parallel, with Choice / Noul / Score outputs, probabilities, confidence, action gates, latency, and K-Symmetry. The public page is a replay snapshot generated from verified real SHHS feature-cache inference; it is clearly labeled and does not claim a live PyTorch backend. For real checkpoint-backed inference, run the local server described in [`demo/README.md`](demo/README.md).
 
 ## Why SLEEPJEV?
 
