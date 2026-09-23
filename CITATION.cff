@@ -12,4 +12,17 @@ license: MIT
 repository-code: "https://github.com/PAI-CUHK/SLEEPJEV"
 abstract: >-
   A signal-native research implementation for reusable overnight PSG states,
-  sparse temporal retrieval, and runtime option-conditioned decisions.
+  sleep staging, sparse temporal retrieval, and runtime option-conditioned
+  Choice, Noul, and Score decisions.
+keywords:
+  - sleep-analysis
+  - sleep-staging
+  - polysomnography
+  - PSG
+  - EEG
+  - EOG
+  - JEV
+  - typed-decisions
+  - sparse-retrieval
+  - runtime-inference
+  - multi-task-serving

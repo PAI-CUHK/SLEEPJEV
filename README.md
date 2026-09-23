@@ -11,6 +11,7 @@
 
 <p align="center">
   <a href="https://github.com/PAI-CUHK/SLEEPJEV/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/PAI-CUHK/SLEEPJEV/ci.yml?label=CI" alt="CI status"></a>
+  <a href="https://github.com/PAI-CUHK/SLEEPJEV/releases"><img src="https://img.shields.io/github/v/release/PAI-CUHK/SLEEPJEV?label=release" alt="Latest release"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-0b8f87" alt="MIT license"></a>
   <img src="https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-1677c8" alt="Python versions">
   <img src="https://img.shields.io/badge/status-alpha%20research%20prototype-e07a2f" alt="research prototype">
@@ -60,7 +61,20 @@ query at runtime.
 
 <p align="center"><a href="https://pai-cuhk.github.io/SLEEPJEV/"><strong>Open the public SLEEPJEV Runtime Query Demo →</strong></a></p>
 
+<p align="center"><a href="https://pai-cuhk.github.io/SLEEPJEV/"><strong>Project site and interactive overview →</strong></a></p>
+
 The demo shows one shared overnight PSG state serving multiple runtime sleep questions in parallel, with Choice / Noul / Score outputs, probabilities, confidence, action gates, latency, and K-Symmetry. The public page is a replay snapshot generated from verified real SHHS feature-cache inference; it is clearly labeled and does not claim a live PyTorch backend. For real checkpoint-backed inference, run the local server described in [`demo/README.md`](demo/README.md).
+
+For terminology and scope, see [`docs/jev.md`](docs/jev.md). SLEEPJEV is an independent JEV-inspired research implementation; it is not the official TypeSafe AI Jev model or SDK.
+
+## Related project
+
+[MEDJEV](https://github.com/liuyisi123/MEDJEV) is the companion research project for clinical text, biomedical literature, and evidence-grounded typed decisions. SLEEPJEV applies the same separation of shared evidence formation, runtime questions, and candidate-conditioned scoring to long-horizon PSG and physiological signals.
+
+| Project | Evidence modality | Main focus |
+| --- | --- | --- |
+| [MEDJEV](https://github.com/liuyisi123/MEDJEV) | Clinical text and biomedical literature | Evidence grounding, calibration, and auditable typed decisions |
+| SLEEPJEV | Overnight PSG and physiological signals | Reusable overnight representations, sparse temporal retrieval, and high-query serving |
 
 ## Why SLEEPJEV?
 
