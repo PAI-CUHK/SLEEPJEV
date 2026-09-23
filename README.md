@@ -50,6 +50,12 @@ query at runtime.
   </a>
 </p>
 
+<p align="center">
+  <a href="https://pai-cuhk.github.io/SLEEPJEV/">
+    <img src="demo/public-demo-preview.png" alt="SLEEPJEV Runtime Query Demo preview" width="100%">
+  </a>
+</p>
+
 <p align="center"><a href="https://pai-cuhk.github.io/SLEEPJEV/"><strong>Open the public SLEEPJEV Runtime Query Demo →</strong></a></p>
 
 The demo shows one shared overnight state serving multiple runtime questions in parallel, with live-looking probability transitions, Choice / Noul / Score outputs, confidence, action gates, latency, and K-Symmetry. The public page is a replay snapshot generated from verified real SHHS feature-cache inference; it is clearly labeled and does not claim a live PyTorch backend. For real checkpoint-backed inference, run the local server described in [`demo/README.md`](demo/README.md).
