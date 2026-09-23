@@ -25,6 +25,8 @@ python demo/server.py
 - 任务：真实 SHHS 特征上的 Choice / Noul / Score 多任务 runtime fan-out
 - 并行监控：一次 batch 同时服务 4 个不同时间窗、20 个 typed decisions
 - 自动 replay：约 650 ms 切换一轮窗口与候选集；四个窗口共享同一次 overnight encoding
+- Arena 视图：每个窗口同时显示 Choice、Noul、Score、Score confidence/action gate，以及 leading probability 的实时 delta
+- 顶部 workload summary：fan-out、batch latency、cache reuse 和 active gate
 
 该 checkpoint 早于 label-free runtime event index heads，因此 Demo 不使用事件 postings 或 gold labels 做 selector。所有任务仍通过同一个真实 encoder、query encoder 和 option scorer 计算；事件 index 本身明确不在本 Demo 的 claim 范围内。
 

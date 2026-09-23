@@ -175,6 +175,10 @@
     .questions-strip { margin-top: 16px; border: 1px solid var(--line); border-radius: 8px; background: #fff; box-shadow: var(--shadow); padding: 15px; }
     .parallel-strip { margin-top: 16px; border: 1px solid #c9dbf4; border-radius: 8px; background: #fff; box-shadow: var(--shadow); padding: 15px; }
     .parallel-strip .strip-icon { color: var(--teal); background: var(--teal-pale); }
+    .arena-metrics { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:7px; margin:0 0 12px; }
+    .arena-metric { min-width:0; padding:8px 10px; border:1px solid var(--line); border-radius:6px; background:#f8fbff; }
+    .arena-metric small { display:block; color:var(--ink-soft); font-size:9px; text-transform:uppercase; letter-spacing:.08em; }
+    .arena-metric strong { display:block; margin-top:2px; color:var(--ink); font:700 13px var(--mono); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
     .parallel-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; }
     .parallel-card { min-width: 0; border: 1px solid var(--line); border-radius: 7px; padding: 11px; background: #fbfdff; position: relative; overflow: hidden; }
     .parallel-card.live { animation: laneFlash .52s ease-out; }
@@ -193,6 +197,7 @@
     .parallel-track i { display:block; height:100%; border-radius:3px; background:var(--blue); transition:width .28s ease; }
     .parallel-foot { display:flex; justify-content:space-between; gap:8px; border-top:1px solid var(--line); margin-top:9px; padding-top:7px; color:var(--ink-soft); font-size:10px; }
     .parallel-foot b { color:var(--orange); font:700 10px var(--mono); }
+    .parallel-delta { color:var(--teal); font:700 10px var(--mono); }
     .strip-head { display: flex; justify-content: space-between; align-items: center; gap: 15px; margin-bottom: 12px; }
     .strip-title { display: flex; align-items: center; gap: 10px; }
     .strip-icon { width: 22px; height: 22px; display: grid; place-items: center; color: var(--blue); background: var(--blue-pale); border-radius: 5px; font-weight: 900; }
@@ -233,7 +238,7 @@
       .steps-grid { display: block; }
       .panel { margin-bottom: 12px; }
       .question-cards { grid-template-columns: 1fr; }
-      .parallel-grid { grid-template-columns: 1fr 1fr; }
+      .parallel-grid, .arena-metrics { grid-template-columns: 1fr 1fr; }
       .strip-hint { display: none; }
     }
     @media (max-width: 480px) {
@@ -248,7 +253,7 @@
       .controls { grid-template-columns: 1fr 66px 66px; }
       .confidence-zone { grid-template-columns: 112px minmax(0, 1fr); gap: 9px; }
     }
-    @media (max-width: 520px) { .parallel-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 520px) { .parallel-grid, .arena-metrics { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -365,6 +370,7 @@
 
     <section class="parallel-strip" aria-labelledby="parallel-heading">
       <div class="strip-head"><div class="strip-title"><span class="strip-icon">×</span><div><h2 id="parallel-heading">Parallel workload monitor</h2><p>Four live windows, one reusable overnight state, updated together.</p></div></div><span class="strip-hint" id="parallelHint">4 windows · 20 decisions · batch update</span></div>
+      <div class="arena-metrics" id="arenaMetrics"><div class="arena-metric"><small>Workload fan-out</small><strong>4 × 5</strong></div><div class="arena-metric"><small>Batch latency</small><strong>-- ms</strong></div><div class="arena-metric"><small>Cache reuse</small><strong>1 encoded night</strong></div><div class="arena-metric"><small>Active gate</small><strong>--</strong></div></div>
       <div class="parallel-grid" id="parallelGrid"></div>
     </section>
 
@@ -383,7 +389,7 @@
       nrem: { options: ['N1', 'N2', 'N3', 'REM'], question: 'Does the evidence favor NREM or REM here?', stage: 'Stage: NREM / REM' }
     };
     const channelColors = { EEG: '#287bea', EOG: '#8654dc', RESP: '#18aaa9', SPO2: '#287bea' };
-    const state = { epochs: 960, epochSeconds: 30, activeKind: 'full', replayStart: 338, replayTimer: null, busy: false, traces: {}, stageSequence: [], history: [], parallelViews: [] };
+    const state = { epochs: 960, epochSeconds: 30, activeKind: 'full', replayStart: 338, replayTimer: null, busy: false, traces: {}, stageSequence: [], history: [], parallelViews: [], parallelSnapshot: [] };
     const $ = (selector) => document.querySelector(selector);
     const $$ = (selector) => Array.from(document.querySelectorAll(selector));
     const clamp = (value, low, high) => Math.max(low, Math.min(high, value));
@@ -473,14 +479,25 @@
         const task = data.tasks[0];
         const rows = sortedProbabilities(task.probabilities).slice(0, 3);
         const scoreTask = data.tasks.find((item) => item.primitive === 'Score');
+        const noulTask = data.tasks.find((item) => item.primitive === 'Noul');
         const score = scoreTask ? Number(scoreTask.expected_score).toFixed(2) + ' / 5' : '—';
         const scoreConfidence = scoreTask ? Number(scoreTask.confidence).toFixed(3) : '—';
         const scoreGate = scoreTask ? (Number(scoreTask.confidence) >= .90 ? 'AUTO' : Number(scoreTask.confidence) >= .70 ? 'REVIEW' : 'HUMAN REVIEW') : '—';
+        const topProbability = Number(task.confidence) || 0;
+        const previous = state.parallelSnapshot[index];
+        const delta = previous == null ? 0 : topProbability - previous;
+        const deltaText = previous == null ? 'new' : (delta >= 0 ? '↑ +' : '↓ ') + delta.toFixed(3);
+        const noulLabel = noulTask ? noulTask.prediction + ' ' + Number(noulTask.confidence).toFixed(3) : '—';
         const rowsHtml = rows.map(([label, value]) => '<div class="parallel-prob"><label>' + escapeHtml(label) + '</label><div class="parallel-track"><i style="width:' + (Number(value) * 100).toFixed(1) + '%"></i></div><strong>' + Number(value).toFixed(3) + '</strong></div>').join('');
-        return '<article class="parallel-card live"><div class="parallel-card-head"><strong>' + escapeHtml(data.label || ('Live window ' + (index + 1))) + '</strong><span>' + escapeHtml(task.primitive) + '</span></div><div class="parallel-window">epochs ' + data.window.start_epoch + '-' + data.window.end_epoch + ' · #' + data.query_id + '</div><div class="parallel-lead"><b>' + escapeHtml(task.prediction) + '</b><span>' + Number(task.confidence).toFixed(3) + '</span></div>' + rowsHtml + '<div class="parallel-foot"><span>Score E[x]</span><b>' + score + '</b></div><div class="parallel-foot"><span>Score confidence · gate</span><b>' + scoreConfidence + ' · ' + scoreGate + '</b></div></article>';
+        return '<article class="parallel-card live"><div class="parallel-card-head"><strong>' + escapeHtml(data.label || ('Live window ' + (index + 1))) + '</strong><span>Choice · Noul · Score</span></div><div class="parallel-window">epochs ' + data.window.start_epoch + '-' + data.window.end_epoch + ' · #' + data.query_id + '</div><div class="parallel-lead"><b>' + escapeHtml(task.prediction) + '</b><span>' + Number(task.confidence).toFixed(3) + ' <i class="parallel-delta">' + deltaText + '</i></span></div>' + rowsHtml + '<div class="parallel-foot"><span>Noul · ' + escapeHtml(noulTask ? noulTask.target : '—') + '</span><b>' + escapeHtml(noulLabel) + '</b></div><div class="parallel-foot"><span>Score E[x]</span><b>' + score + '</b></div><div class="parallel-foot"><span>Score confidence · gate</span><b>' + scoreConfidence + ' · ' + scoreGate + '</b></div></article>';
       }).join('');
       $('#parallelGrid').innerHTML = cards;
       $('#parallelHint').textContent = (results || []).length + ' windows · ' + ((results || []).length * 5) + ' decisions · ' + Number(batchLatency || 0).toFixed(1) + ' ms batch';
+      const active = results?.[0];
+      const activeScore = active?.tasks?.find((item) => item.primitive === 'Score');
+      const activeGate = activeScore ? (Number(activeScore.confidence) >= .90 ? 'AUTO' : Number(activeScore.confidence) >= .70 ? 'REVIEW' : 'HUMAN REVIEW') : '—';
+      $('#arenaMetrics').innerHTML = '<div class="arena-metric"><small>Workload fan-out</small><strong>' + (results || []).length + ' × 5 = ' + ((results || []).length * 5) + '</strong></div><div class="arena-metric"><small>Batch latency</small><strong>' + Number(batchLatency || 0).toFixed(1) + ' ms</strong></div><div class="arena-metric"><small>Cache reuse</small><strong>1 encoded night</strong></div><div class="arena-metric"><small>Active Score gate</small><strong>' + activeGate + '</strong></div>';
+      state.parallelSnapshot = (results || []).map((data) => Number(data.tasks?.[0]?.confidence) || 0);
     }
 
     function renderHistory() {
