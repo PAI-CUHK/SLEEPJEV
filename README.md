@@ -33,6 +33,12 @@ query at runtime.
 
 <p align="center"><sub>One overnight PSG representation supports many runtime semantic decisions.</sub></p>
 
+## Live Demo
+
+<p align="center"><a href="https://pai-cuhk.github.io/SLEEPJEV/"><strong>Open the public SLEEPJEV Runtime Query Demo →</strong></a></p>
+
+The public page is a lightweight replay generated from verified local SLEEPJEV outputs. The local Python demo remains available in [`demo/`](demo/) for real checkpoint-backed inference.
+
 ## Why SLEEPJEV?
 
 <table>
