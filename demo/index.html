@@ -108,8 +108,9 @@
     .options-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
     .options-head strong { font-size: 13px; }
     .options-head span { color: var(--ink-soft); font-size: 11px; }
-    .candidate-options { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 9px; }
+    .candidate-options { display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: 34px; gap: 7px; margin-top: 9px; }
     .candidate-option { min-width: 0; display: flex; align-items: center; gap: 8px; border: 1px solid var(--line); border-radius: 7px; padding: 9px 10px; background: #fff; color: var(--ink); font-size: 11px; }
+    .candidate-option.placeholder { visibility: hidden; pointer-events: none; }
     .candidate-option .radio { flex: 0 0 15px; width: 15px; height: 15px; border: 2px solid #b5c4d8; border-radius: 50%; }
     .candidate-option:first-child .radio { border-color: var(--blue); box-shadow: inset 0 0 0 3px #fff; background: var(--blue); }
     .candidate-option span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -525,7 +526,13 @@
       const preset = queryPresets[state.activeKind];
       $('#questionText').textContent = preset.question;
       $('#constraintStage').textContent = preset.stage;
-      $('#candidateOptions').innerHTML = preset.options.map((option) => '<div class="candidate-option"><i class="radio"></i><span>' + escapeHtml(option) + '</span></div>').join('');
+      const slots = Array.from({ length: 5 }, (_, index) => {
+        const option = preset.options[index];
+        return option
+          ? '<div class="candidate-option"><i class="radio"></i><span>' + escapeHtml(option) + '</span></div>'
+          : '<div class="candidate-option placeholder" aria-hidden="true"><i class="radio"></i><span>placeholder</span></div>';
+      });
+      $('#candidateOptions').innerHTML = slots.join('');
       $$('.preset').forEach((button) => button.classList.toggle('active', button.dataset.kind === state.activeKind));
     }
 
@@ -643,6 +650,7 @@
           const payload = window.SLEEPJEV_STATIC.batches[state.staticIndex % window.SLEEPJEV_STATIC.batches.length];
           state.staticIndex += 1;
           state.staticMode = true;
+          state.replayStart = payload.views[0].window.start_epoch;
           renderParallel(payload.views, payload.batch_latency_ms);
           window.setTimeout(() => renderResult(payload.views[0]), 20);
           $('#headerStatus').textContent = 'Public replay · static snapshot · shared cache semantics';
