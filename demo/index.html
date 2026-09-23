@@ -381,6 +381,7 @@
     <p class="footer-note">Research prototype | real SHHS cached feature slice + formal-small SLEEPJEV checkpoint | probabilities describe evidence/state relationships, not disease risk or clinical advice.</p>
   </main>
 
+  <script src="static-data.js"></script>
   <script>
     const queryPresets = {
       full: { options: ['W', 'N1', 'N2', 'N3', 'REM'], question: 'Which sleep-stage state best matches this window?', stage: 'Stage: all candidates' },
@@ -389,7 +390,7 @@
       nrem: { options: ['N1', 'N2', 'N3', 'REM'], question: 'Does the evidence favor NREM or REM here?', stage: 'Stage: NREM / REM' }
     };
     const channelColors = { EEG: '#287bea', EOG: '#8654dc', RESP: '#18aaa9', SPO2: '#287bea' };
-    const state = { epochs: 960, epochSeconds: 30, activeKind: 'full', replayStart: 338, replayTimer: null, busy: false, traces: {}, stageSequence: [], history: [], parallelViews: [], parallelSnapshot: [] };
+    const state = { epochs: 960, epochSeconds: 30, activeKind: 'full', replayStart: 338, replayTimer: null, busy: false, traces: {}, stageSequence: [], history: [], parallelViews: [], parallelSnapshot: [], staticIndex: 0, staticMode: false };
     const $ = (selector) => document.querySelector(selector);
     const $$ = (selector) => Array.from(document.querySelectorAll(selector));
     const clamp = (value, low, high) => Math.max(low, Math.min(high, value));
@@ -556,6 +557,15 @@
       updateWindow(start, end);
       setLoading(true);
       try {
+        if (window.SLEEPJEV_STATIC?.batches?.length) {
+          const payload = window.SLEEPJEV_STATIC.batches[state.staticIndex % window.SLEEPJEV_STATIC.batches.length];
+          state.staticIndex += 1;
+          state.staticMode = true;
+          renderParallel(payload.views, payload.batch_latency_ms);
+          window.setTimeout(() => renderResult(payload.views[0]), 20);
+          $('#headerStatus').textContent = 'Public replay · static snapshot · shared cache semantics';
+          return;
+        }
         const otherKinds = ['rem', 'n2rem', 'nrem'];
         const shiftedWindow = (offset) => {
           const shiftedStart = (start + offset) % Math.max(1, state.epochs - 4);
@@ -620,8 +630,16 @@
     }
 
     async function loadState() {
-      const response = await fetch('/api/state');
-      const data = await response.json();
+      let data;
+      try {
+        const response = await fetch('/api/state');
+        if (!response.ok) throw new Error('state endpoint unavailable');
+        data = await response.json();
+      } catch (error) {
+        if (!window.SLEEPJEV_STATIC?.state) throw error;
+        data = window.SLEEPJEV_STATIC.state;
+        state.staticMode = true;
+      }
       renderState(data);
       renderCandidateOptions();
       await runQuery();

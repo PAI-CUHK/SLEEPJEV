@@ -18,6 +18,14 @@ python demo/server.py
 
 然后打开 `http://127.0.0.1:8765/`。
 
+## Public demo
+
+GitHub Pages 会从 `main` 自动部署 `demo/` 目录：
+
+<https://pai-cuhk.github.io/SLEEPJEV/>
+
+公网版本使用由真实 checkpoint 生成的静态 replay snapshot，因此无需上传模型权重或 SHHS cache；本地版本仍使用 Python 服务执行真实 runtime inference。
+
 当前默认加载：
 
 - 权重：`artifacts/formal_small_smoke/sleepjev_checkpoint.pt`
