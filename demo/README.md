@@ -40,7 +40,9 @@ The local server expects:
 - Parallel serving: four time windows and twenty typed decisions in one batch
 - Automatic replay: approximately 650 ms between windows and candidate sets
 
-The checkpoint predates the label-free runtime event-index heads. The demo therefore does not claim event-posting-based selection or gold-label access. The learned encoder, query encoder, and option scorer are used by the local runtime.
+The checkpoint predates the label-free runtime event-index heads. The demo therefore does not claim event-posting-based selection or gold-label access. The learned encoder, query encoder, and option scorer are used by the local runtime. Noul outputs whose targets mention apnea, hypopnea, or arousal are event-like option scores over the shared representation, not calibrated clinical event probabilities; the UI marks them as unvalidated.
+
+The `confidence` field returned by the model is the maximum probability over the supplied options (`top-option probability`). It is not a separately calibrated confidence estimate. The UI reports normalized entropy as a distribution-concentration diagnostic and labels its routing thresholds as illustrative.
 
 ## Parallel batch endpoint
 
@@ -61,7 +63,7 @@ Each returned view contains one Choice task, three Noul tasks, and one Score tas
 
 - `OVERNIGHT STATE`: one encoded long-horizon PSG representation and selected time window.
 - `RUNTIME QUERY`: target, constraints, question type, and explicit candidate meanings.
-- `JEV DECISION`: probabilities normalized only over the options supplied by the current query.
+- `JEV DECISION`: uncalibrated probabilities normalized only over the options supplied by the current query.
 - `RETRIEVED EVIDENCE`: query-conditioned sparse evidence without exposing gold labels to the selector.
 - `CACHE REUSED`: one overnight encoding serves many changing runtime questions.
 

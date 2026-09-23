@@ -133,13 +133,16 @@
     .latency-pill { margin-left: auto; display: flex; align-items: center; gap: 7px; padding: 8px 10px; border-radius: 99px; color: #168e8b; background: var(--teal-pale); font-weight: 800; font: 12px var(--mono); white-space: nowrap; }
     .bolt { color: var(--orange); font-size: 16px; line-height: 1; }
     .output-frame { border: 1px solid var(--line); border-radius: 7px; padding: 13px; }
+    .probabilities { min-height: 230px; }
     .output-title { display: flex; justify-content: space-between; align-items: baseline; gap: 9px; margin-bottom: 3px; }
     .output-title strong { font-size: 14px; }
     .output-title span { color: var(--ink-soft); font: 10px var(--mono); }
     .output-subtitle { color: var(--ink-soft); font-size: 11px; margin-bottom: 14px; }
     .probability-row { margin: 12px 0; }
+    .probability-row.placeholder { visibility: hidden; pointer-events: none; }
     .prob-label { display: grid; grid-template-columns: minmax(0, 1fr) 42px; gap: 8px; align-items: baseline; margin-bottom: 5px; }
     .prob-label span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .prob-label span small { margin-left: 6px; color: var(--teal); font: 700 9px var(--mono); letter-spacing: .05em; }
     .prob-label strong { text-align: right; font: 700 12px var(--mono); }
     .prob-track { height: 10px; border-radius: 3px; background: #edf2f7; overflow: hidden; }
     .prob-fill { display: block; height: 100%; width: 0; border-radius: 3px; transition: width .42s cubic-bezier(.2, .8, .2, 1); }
@@ -162,8 +165,8 @@
     .history-row svg { width:100%; height:25px; background:#f8fbff; border-radius:4px; }
     .history-row polyline { fill:none; stroke-width:2; vector-effect:non-scaling-stroke; }
     .confidence-zone { display: grid; grid-template-columns: 126px minmax(0, 1fr); gap: 15px; border-top: 1px solid var(--line); margin-top: 16px; padding-top: 15px; }
-    .confidence-ring { width: 104px; height: 104px; border: 9px solid #dce5ee; border-top-color: var(--teal); border-right-color: var(--teal); border-radius: 50%; display: grid; place-items: center; transform: rotate(28deg); }
-    .confidence-ring-content { transform: rotate(-28deg); text-align: center; }
+    .confidence-ring { --confidence: 0; width: 104px; height: 104px; padding: 9px; background: conic-gradient(var(--teal) calc(var(--confidence) * 100%), #dce5ee 0); border-radius: 50%; display: grid; place-items: center; }
+    .confidence-ring-content { width: 86px; height: 86px; border-radius: 50%; background: var(--card); display: grid; place-items: center; text-align: center; }
     .confidence-ring strong { display: block; font: 700 22px var(--mono); }
     .confidence-ring span { display: block; color: var(--teal); font-size: 10px; font-weight: 700; margin-top: 1px; }
     .metric-label { display: flex; justify-content: space-between; gap: 5px; color: var(--ink-soft); font-size: 11px; }
@@ -218,6 +221,7 @@
     .question-card-head strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; }
     .question-card-head em { margin-left:auto; color:var(--blue-dark); font:700 9px var(--mono); text-transform:uppercase; font-style:normal; }
     .question-card p { margin: 6px 0 9px; color: var(--ink-soft); font-size: 11px; }
+    .question-card p.event-warning { color: var(--orange); }
     .mini-prob { display: grid; grid-template-columns: minmax(0, 1fr) 34px; gap: 8px; align-items: center; margin: 4px 0; color: var(--ink-soft); font-size: 10px; }
     .mini-prob span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .mini-prob span:last-child { color: var(--ink); font: 10px var(--mono); text-align: right; }
@@ -294,7 +298,7 @@
     .prob-track, .parallel-track, .mini-track, .uncertainty-track { background: #1c3941; }
     .prob-fill.blue, .parallel-track i, .mini-track i { background: var(--teal); }
     .prob-fill.gray { background: #5c7680; }
-    .confidence-ring { border-color: #24424b; border-top-color: var(--teal); border-right-color: var(--teal); }
+    .confidence-ring { background: conic-gradient(var(--teal) calc(var(--confidence) * 100%), #24424b 0); }
     .confidence-ring span, .audit-chip em, .parallel-delta { color: var(--teal); }
     .strip-icon { color: var(--teal); background: #103d40; }
     .parallel-strip { border-color: #2b6970; }
@@ -382,7 +386,7 @@
             <div class="trace-row"><div class="trace-label">RESP<small>feature</small></div><svg class="trace-svg" data-channel="RESP" viewBox="0 0 600 54" preserveAspectRatio="none" aria-label="respiration feature trace"></svg></div>
             <div class="trace-row"><div class="trace-label">SpO2<small>feature</small></div><svg class="trace-svg" data-channel="SPO2" viewBox="0 0 600 54" preserveAspectRatio="none" aria-label="SpO2 feature trace"></svg></div>
             <div class="hypnogram">
-              <div class="section-title"><h3>Hypnogram (AASM)</h3><span id="windowReadout">Window 338-343</span></div>
+              <div class="section-title"><h3>Reference hypnogram (SHHS / AASM)</h3><span id="windowReadout">Window 338-343</span></div>
               <div class="stage-legend"><span><i class="stage-swatch" style="background:#d8e2ec"></i>W</span><span><i class="stage-swatch" style="background:#75bcef"></i>N1</span><span><i class="stage-swatch" style="background:#2f82e9"></i>N2</span><span><i class="stage-swatch" style="background:#173f9a"></i>N3</span><span><i class="stage-swatch" style="background:#8654dc"></i>REM</span></div>
               <div class="stage-track" id="stageTrack"><i class="window-overlay"></i></div>
               <div class="stage-axis"><span>22:00</span><span>00:00</span><span>02:00</span><span>04:00</span><span>06:00</span></div>
@@ -427,7 +431,7 @@
       <section class="panel decision-panel" aria-labelledby="decision-heading">
         <div class="panel-head">
           <span class="step-no">3</span>
-          <div><h2 id="decision-heading">JEV decision</h2><p>Fast probabilities from the shared state.</p></div>
+          <div><h2 id="decision-heading">JEV decision</h2><p>Uncalibrated option probabilities from the shared state.</p></div>
           <div class="latency-pill"><span class="bolt">*</span><span id="latencyPill">-- ms</span></div>
         </div>
         <div class="panel-body">
@@ -436,16 +440,16 @@
             <div class="output-subtitle" id="outputSubtitle">Waiting for the first runtime query.</div>
             <div id="probabilities"></div>
             <div class="confidence-zone">
-              <div class="confidence-ring" id="confidenceRing"><div class="confidence-ring-content"><strong id="confidenceValue">--</strong><span>confidence</span></div></div>
-              <div><div class="metric-label"><span>Predictive uncertainty</span><strong id="entropyValue">--</strong></div><div class="uncertainty-track"><i class="uncertainty-fill" id="uncertaintyFill"></i></div><div class="uncertainty-axis"><span>low uncertainty</span><span>high uncertainty</span></div></div>
+              <div class="confidence-ring" id="confidenceRing"><div class="confidence-ring-content"><strong id="confidenceValue">--</strong><span>top-option p</span></div></div>
+              <div><div class="metric-label"><span>Normalized entropy</span><strong id="entropyValue">--</strong></div><div class="uncertainty-track"><i class="uncertainty-fill" id="uncertaintyFill"></i></div><div class="uncertainty-axis"><span>concentrated</span><span>uncertain</span></div></div>
             </div>
             <div class="metric-grid">
               <div class="metric-cell"><b>o</b><div><small>Latency</small><strong id="latencyValue">-- ms</strong></div></div>
               <div class="metric-cell"><b>+</b><div><small>Tokens retrieved</small><strong id="tokenValue">-- / --</strong></div></div>
             </div>
-            <div class="decision-audit"><div class="audit-chip" id="actionChip"><small>Action gate</small><strong id="actionValue">--</strong><em id="actionHint">waiting for decision</em></div><div class="audit-chip"><small>K-symmetry</small><strong id="ksymmValue">--</strong><em id="ksymmHint">candidate-order audit</em></div></div>
+            <div class="decision-audit"><div class="audit-chip" id="actionChip"><small>Illustrative routing gate</small><strong id="actionValue">--</strong><em id="actionHint">waiting for decision</em></div><div class="audit-chip"><small>K-symmetry</small><strong id="ksymmValue">--</strong><em id="ksymmHint">candidate-order audit</em></div></div>
             <div class="history-box"><div class="history-head"><span>Probability history</span><span>last 12 windows</span></div><div id="historyRows"></div></div>
-            <div class="decision-note"><b>+</b><span>One shared cache, one sparse readout, probabilities over the current runtime options. This is a research output, not a clinical diagnosis.</span></div>
+            <div class="decision-note"><b>+</b><span>One shared cache, one sparse readout, and probabilities over the current runtime options. Top-option probability is not calibrated confidence; event-like Noul outputs are not clinical event risk.</span></div>
           </div>
         </div>
       </section>
@@ -544,22 +548,31 @@
       if (loading) { $('#outputSubtitle').textContent = 'Sparse readout in progress over the selected evidence window.'; $('#outputSubtitle').classList.remove('error-text'); }
     }
 
-    function sortedProbabilities(probabilities) {
-      return Object.entries(probabilities || {}).sort((a, b) => b[1] - a[1]);
+    function orderedProbabilities(task) {
+      const probabilities = task.probabilities || {};
+      return (task.options || Object.keys(probabilities)).map((label) => [label, probabilities[label]]).filter(([, value]) => value != null);
+    }
+
+    function isEventTask(task) {
+      return /apnea|hypopnea|arousal/i.test(String(task?.target || ''));
     }
 
     function renderProbabilities(task) {
-      const rows = sortedProbabilities(task.probabilities);
+      const rows = orderedProbabilities(task);
       const colors = ['blue', 'teal', 'purple', 'gray', 'blue'];
-      $('#probabilities').innerHTML = rows.map(([label, value], index) => '<div class="probability-row"><div class="prob-label"><span>' + escapeHtml(label) + '</span><strong>' + Number(value).toFixed(3) + '</strong></div><div class="prob-track"><i class="prob-fill ' + colors[index % colors.length] + '" style="width:' + (Number(value) * 100).toFixed(2) + '%"></i></div></div>').join('');
+      const leading = rows.reduce((best, row) => row[1] > best[1] ? row : best, ['', -Infinity])[0];
+      const rendered = rows.map(([label, value], index) => '<div class="probability-row' + (label === leading ? ' leading' : '') + '"><div class="prob-label"><span>' + escapeHtml(label) + (label === leading ? '<small>LEADING</small>' : '') + '</span><strong>' + Number(value).toFixed(3) + '</strong></div><div class="prob-track"><i class="prob-fill ' + colors[index % colors.length] + '" style="width:' + (Number(value) * 100).toFixed(2) + '%"></i></div></div>');
+      while (rendered.length < 5) rendered.push('<div class="probability-row placeholder" aria-hidden="true"><div class="prob-label"><span>placeholder</span><strong>0.000</strong></div><div class="prob-track"><i class="prob-fill gray" style="width:0"></i></div></div>');
+      $('#probabilities').innerHTML = rendered.join('');
     }
 
     function renderQuestionCards(tasks) {
       const cards = tasks.slice(1).map((task, index) => {
-        const rows = sortedProbabilities(task.probabilities).slice(0, task.primitive === 'Score' ? 5 : 3);
+        const rows = orderedProbabilities(task).slice(0, task.primitive === 'Score' ? 5 : 3);
         const action = Number(task.confidence) >= .90 ? 'AUTO' : Number(task.confidence) >= .70 ? 'REVIEW' : 'HUMAN REVIEW';
-        const scoreLine = task.primitive === 'Score' ? '<div class="score-line">expected score <b>' + Number(task.expected_score || 0).toFixed(2) + ' / 5</b></div><div class="score-line">confidence <b>' + Number(task.confidence || 0).toFixed(3) + '</b></div><div class="score-line">action gate <b>' + action + '</b></div>' : '';
-        return '<article class="question-card"><div class="question-card-head"><span class="question-card-no">' + (index + 1) + '</span><strong>' + escapeHtml(task.target) + '</strong><em>' + escapeHtml(task.primitive || 'Noul') + '</em></div><p>same evidence window · ' + action + '</p>' + rows.map(([label, value]) => '<div class="mini-prob"><span>' + escapeHtml(label) + '</span><span>' + Number(value).toFixed(3) + '</span><div class="mini-track"><i style="width:' + (Number(value) * 100).toFixed(1) + '%"></i></div></div>').join('') + scoreLine + '</article>';
+        const scoreLine = task.primitive === 'Score' ? '<div class="score-line">expected score <b>' + Number(task.expected_score || 0).toFixed(2) + ' / 5</b></div><div class="score-line">top-option p <b>' + Number(task.confidence || 0).toFixed(3) + '</b></div><div class="score-line">routing gate <b>' + action + '</b></div>' : '';
+        const eventNote = isEventTask(task) ? '<p class="event-warning">unvalidated event-like task · not clinical risk</p>' : '<p>same evidence window · illustrative gate: ' + action + '</p>';
+        return '<article class="question-card"><div class="question-card-head"><span class="question-card-no">' + (index + 1) + '</span><strong>' + escapeHtml(task.target) + '</strong><em>' + escapeHtml(task.primitive || 'Noul') + '</em></div>' + eventNote + rows.map(([label, value]) => '<div class="mini-prob"><span>' + escapeHtml(label) + '</span><span>' + Number(value).toFixed(3) + '</span><div class="mini-track"><i style="width:' + (Number(value) * 100).toFixed(1) + '%"></i></div></div>').join('') + scoreLine + '</article>';
       }).join('');
       $('#questionCards').innerHTML = cards;
     }
@@ -567,7 +580,7 @@
     function renderParallel(results, batchLatency) {
       const cards = (results || []).map((data, index) => {
         const task = data.tasks[0];
-        const rows = sortedProbabilities(task.probabilities).slice(0, 3);
+        const rows = orderedProbabilities(task).slice(0, 3);
         const scoreTask = data.tasks.find((item) => item.primitive === 'Score');
         const noulTask = data.tasks.find((item) => item.primitive === 'Noul');
         const score = scoreTask ? Number(scoreTask.expected_score).toFixed(2) + ' / 5' : '—';
@@ -579,7 +592,8 @@
         const deltaText = previous == null ? 'new' : (delta >= 0 ? '↑ +' : '↓ ') + delta.toFixed(3);
         const noulLabel = noulTask ? noulTask.prediction + ' ' + Number(noulTask.confidence).toFixed(3) : '—';
         const rowsHtml = rows.map(([label, value]) => '<div class="parallel-prob"><label>' + escapeHtml(label) + '</label><div class="parallel-track"><i style="width:' + (Number(value) * 100).toFixed(1) + '%"></i></div><strong>' + Number(value).toFixed(3) + '</strong></div>').join('');
-        return '<article class="parallel-card live"><div class="parallel-card-head"><strong>' + escapeHtml(data.label || ('Live window ' + (index + 1))) + '</strong><span>Choice · Noul · Score</span></div><div class="parallel-window">epochs ' + data.window.start_epoch + '-' + data.window.end_epoch + ' · #' + data.query_id + '</div><div class="parallel-lead"><b>' + escapeHtml(task.prediction) + '</b><span>' + Number(task.confidence).toFixed(3) + ' <i class="parallel-delta">' + deltaText + '</i></span></div>' + rowsHtml + '<div class="parallel-foot"><span>Noul · ' + escapeHtml(noulTask ? noulTask.target : '—') + '</span><b>' + escapeHtml(noulLabel) + '</b></div><div class="parallel-foot"><span>Score E[x]</span><b>' + score + '</b></div><div class="parallel-foot"><span>Score confidence · gate</span><b>' + scoreConfidence + ' · ' + scoreGate + '</b></div></article>';
+        const noulName = noulTask ? (isEventTask(noulTask) ? noulTask.target + ' · unvalidated' : noulTask.target) : '—';
+        return '<article class="parallel-card live"><div class="parallel-card-head"><strong>' + escapeHtml(data.label || ('Replay window ' + (index + 1))) + '</strong><span>Choice · Noul · Score</span></div><div class="parallel-window">epochs ' + data.window.start_epoch + '-' + data.window.end_epoch + ' · #' + data.query_id + '</div><div class="parallel-lead"><b>' + escapeHtml(task.prediction) + '</b><span>' + Number(task.confidence).toFixed(3) + ' <i class="parallel-delta">' + deltaText + '</i></span></div>' + rowsHtml + '<div class="parallel-foot"><span>Noul · ' + escapeHtml(noulName) + '</span><b>' + escapeHtml(noulLabel) + '</b></div><div class="parallel-foot"><span>Score E[x]</span><b>' + score + '</b></div><div class="parallel-foot"><span>Score top-option p · gate</span><b>' + scoreConfidence + ' · ' + scoreGate + '</b></div></article>';
       }).join('');
       $('#parallelGrid').innerHTML = cards;
       $('#parallelHint').textContent = (results || []).length + ' windows · ' + ((results || []).length * 5) + ' decisions · ' + Number(batchLatency || 0).toFixed(1) + ' ms batch';
@@ -613,8 +627,7 @@
       $('#outputSubtitle').textContent = 'Leading option: ' + mainTask.prediction + ' | ' + mainTask.selected_tokens + ' selected tokens from the shared cache';
       $('#queryMeta').textContent = 'query #' + data.query_id + ' | ' + data.window.start_epoch + '-' + data.window.end_epoch;
       $('#confidenceValue').textContent = confidence.toFixed(2);
-      $('#confidenceRing').style.borderTopColor = confidence > .75 ? 'var(--teal)' : 'var(--orange)';
-      $('#confidenceRing').style.borderRightColor = confidence > .75 ? 'var(--teal)' : 'var(--orange)';
+      $('#confidenceRing').style.setProperty('--confidence', confidence);
       $('#entropyValue').textContent = entropy.toFixed(2);
       $('#uncertaintyFill').style.width = (uncertainty * 100).toFixed(1) + '%';
       $('#uncertaintyFill').style.background = uncertainty > .75 ? 'var(--orange)' : 'var(--teal)';
@@ -623,7 +636,7 @@
       $('#tokenValue').textContent = mainTask.selected_tokens + ' / ' + data.overnight_epochs;
       const action = confidence >= .90 ? 'AUTO' : confidence >= .70 ? 'REVIEW' : 'HUMAN REVIEW';
       $('#actionValue').textContent = action;
-      $('#actionHint').textContent = action === 'AUTO' ? 'safe to continue' : 'route to review queue';
+      $('#actionHint').textContent = action === 'AUTO' ? 'illustrative threshold only' : 'illustrative review threshold';
       $('#actionChip').classList.toggle('review', action !== 'AUTO');
       const symmetry = data.ksymm || {};
       $('#ksymmValue').textContent = symmetry.status || '--';
@@ -699,7 +712,7 @@
       $('#windowPreset').value = 'focus';
       renderCandidateOptions();
       updateWindow(state.replayStart, state.replayStart + 5);
-      $('#replayStatus').textContent = 'live batch | epochs ' + state.replayStart + '-' + (state.replayStart + 5) + ' | ' + queryPresets[state.activeKind].options.join(' / ');
+      $('#replayStatus').textContent = (state.staticMode ? 'public replay' : 'live batch') + ' | epochs ' + state.replayStart + '-' + (state.replayStart + 5) + ' | ' + queryPresets[state.activeKind].options.join(' / ');
       await runQuery();
       if (state.replayTimer) $('#replayStatus').textContent = 'cycling window and option set';
     }
