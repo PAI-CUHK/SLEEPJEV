@@ -1,6 +1,6 @@
 # SLEEPJEV Runtime Query Console
 
-这是 SLEEPJEV 的交互式产品 Demo，不是临床应用。当前版本已经接入本地真实 checkpoint 和 SHHS cached feature slice，把项目的核心 JEV-inspired 契约展示成一个可操作的工作面：
+This is an interactive research prototype, not a clinical application. It demonstrates the JEV-inspired runtime contract:
 
 ```text
 shared overnight state + runtime question + runtime options
@@ -10,37 +10,41 @@ shared overnight state + runtime question + runtime options
 
 ## Run locally
 
-在本目录的上一级运行：
+Run this command from the parent directory of `demo/`:
 
 ```powershell
 python demo/server.py
 ```
 
-然后打开 `http://127.0.0.1:8765/`。
+Then open `http://127.0.0.1:8765/`.
+
+The local server loads the real SLEEPJEV checkpoint and the local SHHS feature cache. It performs actual PyTorch inference over the cached feature representation.
 
 ## Public demo
 
-GitHub Pages 会从 `main` 自动部署 `demo/` 目录：
+The public GitHub Pages build is available at:
 
 <https://pai-cuhk.github.io/SLEEPJEV/>
 
-公网版本使用由真实 checkpoint 生成的静态 replay snapshot，因此无需上传模型权重或 SHHS cache；本地版本仍使用 Python 服务执行真实 runtime inference。
+GitHub Pages cannot run Python or PyTorch. The public page therefore uses a clearly labeled replay snapshot derived from verified local model runs. It does not claim live inference. The GitHub source is available at:
 
-当前默认加载：
+<https://github.com/PAI-CUHK/SLEEPJEV>
 
-- 权重：`artifacts/formal_small_smoke/sleepjev_checkpoint.pt`
-- 数据：`artifacts/experiment1_shhs_full/cache/shhs1-200001.npz`
-- 任务：真实 SHHS 特征上的 Choice / Noul / Score 多任务 runtime fan-out
-- 并行监控：一次 batch 同时服务 4 个不同时间窗、20 个 typed decisions
-- 自动 replay：约 650 ms 切换一轮窗口与候选集；四个窗口共享同一次 overnight encoding
-- Arena 视图：每个窗口同时显示 Choice、Noul、Score、Score confidence/action gate，以及 leading probability 的实时 delta
-- 顶部 workload summary：fan-out、batch latency、cache reuse 和 active gate
+## Local runtime inputs
 
-该 checkpoint 早于 label-free runtime event index heads，因此 Demo 不使用事件 postings 或 gold labels 做 selector。所有任务仍通过同一个真实 encoder、query encoder 和 option scorer 计算；事件 index 本身明确不在本 Demo 的 claim 范围内。
+The local server expects:
+
+- Checkpoint: `artifacts/formal_small_smoke/sleepjev_checkpoint.pt`
+- Feature cache: `artifacts/experiment1_shhs_full/cache/shhs1-200001.npz`
+- Workload: Choice, Noul, and Score queries over the same overnight representation
+- Parallel serving: four time windows and twenty typed decisions in one batch
+- Automatic replay: approximately 650 ms between windows and candidate sets
+
+The checkpoint predates the label-free runtime event-index heads. The demo therefore does not claim event-posting-based selection or gold-label access. The learned encoder, query encoder, and option scorer are used by the local runtime.
 
 ## Parallel batch endpoint
 
-除了单窗口 `POST /api/query`，Demo 还提供 `POST /api/multi`，用于展示长时程状态在多个 runtime workload 上并行复用：
+In addition to `POST /api/query`, the server exposes `POST /api/multi`:
 
 ```json
 {
@@ -51,28 +55,14 @@ GitHub Pages 会从 `main` 自动部署 `demo/` 目录：
 }
 ```
 
-返回结果中的每个 view 都包含 Choice、3 个 Noul 和 1 个 Score；主 view 进行 K-Symmetry 审计，其余 view 标记为共享本轮审计状态。
+Each returned view contains one Choice task, three Noul tasks, and one Score task. The main view runs the K-Symmetry audit; the other views reuse the same audit result for the batch.
 
 ## Product contract
 
-- 左侧 `OVERNIGHT STATE`：一次编码后的长时程 PSG 状态、时间窗和可审计的事件 posting。
-- 中间 `RUNTIME QUERY`：target、stage、position 和显式 candidate meanings；对应 `SleepQuery` 的运行时字段。
-- 右侧 `JEV DECISION`：只在当前 query 的 options 上归一化的概率分布，并同时展示 selected tokens、latency 和 readout mode。
-- `RETRIEVED EVIDENCE`：展示 query-conditioned sparse readout 的证据组，不把 gold event label 暴露给 selector。
-- `Cache reused`：强调高 query 数场景的系统价值——overnight encoding 只做一次，问题可以连续改变。
+- `OVERNIGHT STATE`: one encoded long-horizon PSG representation and selected time window.
+- `RUNTIME QUERY`: target, constraints, question type, and explicit candidate meanings.
+- `JEV DECISION`: probabilities normalized only over the options supplied by the current query.
+- `RETRIEVED EVIDENCE`: query-conditioned sparse evidence without exposing gold labels to the selector.
+- `CACHE REUSED`: one overnight encoding serves many changing runtime questions.
 
-## Next integration step
-
-将 `demo/index.html` 里的 `presets` 替换为后端返回的 `SleepQuery` / `model.answer()` JSON 即可。建议保留以下字段：
-
-```json
-{
-  "query": {"target": "hypopnea", "options": ["negative", "positive"]},
-  "probabilities": {"negative": 0.31, "positive": 0.62},
-  "selected_tokens": 128,
-  "n_epochs": 964,
-  "latency_ms": 0.42,
-  "readout_mode": "sparse",
-  "evidence": [{"name": "Respiratory", "score": 0.86}]
-}
-```
+The public replay is intentionally separated from the local live inference path because the model checkpoint and dataset-derived cache are not currently published as public artifacts.

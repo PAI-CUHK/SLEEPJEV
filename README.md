@@ -8,7 +8,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/liuyisi123/SLEEPJEV/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/liuyisi123/SLEEPJEV/ci.yml?label=CI" alt="CI status"></a>
+  <a href="https://github.com/PAI-CUHK/SLEEPJEV/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/PAI-CUHK/SLEEPJEV/ci.yml?label=CI" alt="CI status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-0b8f87" alt="MIT license"></a>
   <img src="https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-1677c8" alt="Python versions">
   <img src="https://img.shields.io/badge/status-alpha%20research%20prototype-e07a2f" alt="research prototype">
@@ -18,7 +18,7 @@
   <a href="#jev-in-sleepjev">JEV design</a> ·
   <a href="#method-at-a-glance">Method</a> ·
   <a href="#high-query-workload-results">Results</a> ·
-  <a href="README.zh-CN.md">Chinese documentation</a>
+  <a href="https://github.com/PAI-CUHK/SLEEPJEV">GitHub repository</a>
 </p>
 
 > **Research prototype.** SLEEPJEV is not a medical device, diagnostic system, or source of clinical advice. It has not been validated for patient care or deployment.
@@ -37,7 +37,7 @@ query at runtime.
 
 <p align="center"><a href="https://pai-cuhk.github.io/SLEEPJEV/"><strong>Open the public SLEEPJEV Runtime Query Demo →</strong></a></p>
 
-The public page is a lightweight replay generated from verified local SLEEPJEV outputs. The local Python demo remains available in [`demo/`](demo/) for real checkpoint-backed inference.
+The public page is a lightweight replay generated from verified local SLEEPJEV outputs. The local Python demo remains available in [`demo/`](demo/) for real checkpoint-backed inference. The public replay is clearly labeled and does not claim live backend inference.
 
 ## Why SLEEPJEV?
 
